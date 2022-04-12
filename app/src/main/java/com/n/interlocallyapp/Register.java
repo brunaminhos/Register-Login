@@ -1,62 +1,51 @@
 package com.n.interlocallyapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationRequest;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 //import com.google.android.gms.location.LocationRequest;
 
 
 public class Register extends AppCompatActivity {
     EditText mEmail, mPassword;
     Button mRegisterBtn;
-    Button locationBtn;
     FirebaseAuth fAuth;
 
-
-//    TextView addressText;
-//    Button locationButton;
-//    LocationRequest locationRequest;
+    // location variables
+    Button locationBtn;
+    TextView textView1;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +56,6 @@ public class Register extends AppCompatActivity {
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
         mRegisterBtn = findViewById(R.id.registerBtn);
-        locationBtn = findViewById(R.id.locationBtn);
-
         fAuth = FirebaseAuth.getInstance();
 
         //check if the user has already created one account
@@ -76,15 +63,6 @@ public class Register extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
-
-
-        // location button to be worked on
-        locationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(Register.this, "Working", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         // validate user input
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
@@ -159,106 +137,63 @@ public class Register extends AppCompatActivity {
         // change textView to new clickable text
         textLogin.setText(sLogin);
         textLogin.setMovementMethod(LinkMovementMethod.getInstance());
+
+        //Assign location variables
+        locationBtn = findViewById(R.id.locationBtn);
+        textView1 = findViewById(R.id.addressText);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        locationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Register.this, "Working", Toast.LENGTH_SHORT).show();
+                //check permission
+                if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // When permission granted
+                    getLocation();
+
+                } else {
+                    ActivityCompat.requestPermissions(Register.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+                }
+            }
+        });
+
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                //Initialize Location
+                Location location = task.getResult();
+                if (location != null) {
+                    try {
+                        //Initialize geoCoder
+                        Geocoder geocoder = new Geocoder(Register.this, Locale.getDefault());
+                        // Initialize Address list
+                        List<Address> addresses = geocoder.getFromLocation(
+                                location.getLatitude(), location.getLongitude(), 1
+                        );
+
+                        // Set Latitude and Longitude on TextView
+                        textView1.setText("Latitude" + addresses.get(0).getLatitude() + " Longitude " + addresses.get(0).getLongitude());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
 }
-
-
-//        addressText = findViewById(R.id.addressText);
-//        locationButton = findViewById(R.id.locationBtn);
-//
-//        locationRequest = LocationRequest.create();
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        locationRequest.setInterval(5000);
-//        locationRequest.setFastestInterval(2000);
-//
-//        locationButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//
-//                        if (isGPSEnabled()) {
-//                            LocationServices.getFusedLocationProviderClient(Register.this).requestLocationUpdates(locationRequest, new LocationCallback() {
-//                                @Override
-//                                public void onLocationResult(@NonNull LocationResult locationResult) {
-//                                    super.onLocationResult(locationResult);
-//
-//                                    LocationServices.getFusedLocationProviderClient(Register.this).removeLocationUpdates(this);
-//
-//                                    if (locationResult != null && locationResult.getLocations().size() > 0) {
-//                                        int index = locationResult.getLocations().size() - 1;
-//                                        double latitude = locationResult.getLocations().get(index).getLatitude();
-//                                        double longitude = locationResult.getLocations().get(index).getLongitude();
-//
-//                                        addressText.setText("Latitude: " + latitude + " /n" + "Longitude: " + longitude);
-//
-//
-//                                    }
-//                                }
-//                            }, Looper.getMainLooper());
-//
-//                        } else {
-//                            turnOnGPS();
-//                        }
-//                    } else {
-//                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//                    }
-//                }
-//            }
-//        });
-
-
-//    private void turnOnGPS() {
-//
-//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-//                .addLocationRequest(locationRequest);
-//        builder.setAlwaysShow(true);
-//
-//        Task<LocationSettingsResponse> result = LocationServices.getSettingsClient(getApplicationContext())
-//                .checkLocationSettings(builder.build());
-//
-//        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-//            @Override
-//            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-//
-//                try {
-//                    LocationSettingsResponse response = task.getResult(ApiException.class);
-//                    Toast.makeText(Register.this, "GPS is already tured on", Toast.LENGTH_SHORT).show();
-//
-//                } catch (ApiException e) {
-//
-//                    switch (e.getStatusCode()) {
-//                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-//
-//                            try {
-//                                ResolvableApiException resolvableApiException = (ResolvableApiException) e;
-//                                resolvableApiException.startResolutionForResult(Register.this, 2);
-//                            } catch (IntentSender.SendIntentException ex) {
-//                                ex.printStackTrace();
-//                            }
-//                            break;
-//
-//                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-//                            //Device does not have location
-//                            break;
-//                    }
-//                }
-//            }
-//        });
-//
-//    }
-//
-//    private boolean isGPSEnabled() {
-//        LocationManager locationManager = null;
-//        boolean isEnabled = false;
-//
-//        if (locationManager == null) {
-//            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        }
-//
-//        isEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-//        return isEnabled;
-//
-//    }
