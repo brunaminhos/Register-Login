@@ -21,9 +21,11 @@ public class ForgotPassword extends AppCompatActivity {
 
     private EditText mEmail;
     private Button resetPassword;
-    TextView error;
+    private TextView error;
+
     private String email;
-    FirebaseAuth fAuth;
+
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

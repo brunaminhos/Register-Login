@@ -49,15 +49,19 @@ public class Register extends AppCompatActivity {
                     ".{8,}" +               //at least 8 characters
                     "$");
 
-        EditText mEmail, mPassword;
-    Button mRegisterBtn;
-    FirebaseAuth fAuth;
+    private double latitude;
+    private double longitude;
+    private String password, email;
 
-    TextView passwordInput, emailInput, locationView;
+    private FirebaseAuth fAuth;
+
+    private EditText mEmail, mPassword;
+    private Button mRegisterBtn;
+    private TextView passwordInput, emailInput, locationView;
 
     // location variables
-    Button locationBtn;
-    FusedLocationProviderClient fusedLocationProviderClient;
+    private Button locationBtn;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,45 +83,50 @@ public class Register extends AppCompatActivity {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Register.this);
 
 
-        //check if the user has already created one account
-        if (fAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-        }
+        //Check if user already exists in database
+        validation();
 
+        // making text clickable
+        clickableText();
+
+        locationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //check permission
+                if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // When permission granted
+                    getLocation();
+                } else {
+                    ActivityCompat.requestPermissions(Register.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+                }
+            }
+        });
 
         // validate user input
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-
+                email = mEmail.getText().toString().trim();
+                password = mPassword.getText().toString().trim();
 
                 if (!validateEmail(email) | !validatePassword(password)) {
                     return;
                 }
 
-                //register the user into the firebase
-                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        //display error to the user or the result if the user was created
-                        if (task.isSuccessful()) {
-                            Toast.makeText(Register.this, "User Created!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), Register.class));
-                        } else {
-                            emailInput.setText(task.getException().getMessage());
-                        }
-
-                    }
-                });
+                registration();
             }
         });
+    }
 
+    private void validation() {
+        //check if the user has already created one account
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
+    }
 
-        // making text clickable
+    private void clickableText() {
         TextView textLogin = findViewById(R.id.Login);
 
         String login = "Already Registered? Click Here";
@@ -147,23 +156,29 @@ public class Register extends AppCompatActivity {
         // change textView to new clickable text
         textLogin.setText(sLogin);
         textLogin.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 
+    // Register user on Firebase
+    private void registration() {
 
-        locationBtn.setOnClickListener(new View.OnClickListener() {
+        //register the user into the firebase
+        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
             @Override
-            public void onClick(View view) {
-                Toast.makeText(Register.this, "working", Toast.LENGTH_SHORT).show();
-                //check permission
-                if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    // When permission granted
-                    getLocation();
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                //display error to the user or the result if the user was created
+                if (task.isSuccessful()) {
+                    Toast.makeText(Register.this, "User Created!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), Register.class));
                 } else {
-                    ActivityCompat.requestPermissions(Register.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+                    emailInput.setText(task.getException().getMessage());
                 }
+
             }
         });
     }
 
+    // Validate email input
     private boolean validateEmail(String email) {
 
         if (email.isEmpty()) {
@@ -178,6 +193,7 @@ public class Register extends AppCompatActivity {
         }
     }
 
+    // Validate Password Input
     private boolean validatePassword(String password) {
 
         if (password.isEmpty()) {
@@ -198,6 +214,7 @@ public class Register extends AppCompatActivity {
     }
 }
 
+    // Get location
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -222,6 +239,9 @@ public class Register extends AppCompatActivity {
                         List<Address> addresses = geocoder.getFromLocation(
                                 location.getLatitude(), location.getLongitude(), 1
                         );
+
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
 
                         // Set Latitude and Longitude on TextView
 //                        textView1.setText("Latitude" + addresses.get(0).getLatitude() + " Longitude " + addresses.get(0).getLongitude());

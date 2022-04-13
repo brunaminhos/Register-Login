@@ -2,20 +2,13 @@ package com.n.interlocallyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Patterns;
@@ -25,16 +18,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Login extends AppCompatActivity {
@@ -48,11 +36,13 @@ public class Login extends AppCompatActivity {
                     ".{8,}" +               //at least 8 characters
                     "$");
 
-    EditText mEmail, mPassword;
-    Button mLoginBtn;
-    FirebaseAuth fAuth;
+    private EditText mEmail, mPassword;
+    private Button mLoginBtn;
+    private TextView passwordInput, emailInput, textRegister, textPassword;
 
-    TextView passwordInput, emailInput;
+    String email, password;
+
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +55,6 @@ public class Login extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         mLoginBtn = findViewById(R.id.loginBtn);
 
-
-
         passwordInput = findViewById(R.id.passwordInput);
         emailInput = findViewById(R.id.emailInput);
 
@@ -74,31 +62,23 @@ public class Login extends AppCompatActivity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
+                email = mEmail.getText().toString().trim();
+                password = mPassword.getText().toString().trim();
 
                 if (!validateEmail(email) | !validatePassword(password)) {
                     return;
                 }
-
-                //authenticate the user
-                fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(Login.this, "Logged in Successfully.", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        } else {
-                            emailInput.setText(task.getException().getMessage());
-                        }
-                    }
-                });
+                authentication();
             }
         });
 
-        //Making TextView clickable
-        TextView textRegister = findViewById(R.id.Register);
-        TextView textPassword = findViewById(R.id.PasswordText);
+        //Make TextView clickable
+        clickableText();
+    }
+
+    private void clickableText() {
+        textRegister = findViewById(R.id.Register);
+        textPassword = findViewById(R.id.PasswordText);
 
         String register = "First-time User? Register Here";
         String password = "Forgotten Password? Click Here";
@@ -155,7 +135,21 @@ public class Login extends AppCompatActivity {
         // Set new forgot password text now clickable
         textPassword.setText(sPassword);
         textPassword.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 
+    private void authentication() {
+        //authenticate the user
+        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Login.this, "Logged in Successfully.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else {
+                    emailInput.setText(task.getException().getMessage());
+                }
+            }
+        });
     }
 
     private boolean validateEmail(String email) {
