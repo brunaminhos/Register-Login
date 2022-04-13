@@ -130,10 +130,10 @@ public class Login extends AppCompatActivity {
             public void onClick(View widget) {
                 Toast.makeText(Login.this, "Two", Toast.LENGTH_SHORT).show();
 
-                //Going from Login to password reset when clicked.
-//                Intent passwordIntent = new Intent(Login.this, PasswordReset.class);
-//
-//                startActivity(passwordIntent);
+//                Going from Login to password reset when clicked.
+                Intent passwordIntent = new Intent(Login.this, ForgotPassword.class);
+
+                startActivity(passwordIntent);
 
             }
 
