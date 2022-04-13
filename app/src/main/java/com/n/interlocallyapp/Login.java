@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +44,7 @@ public class Login extends AppCompatActivity {
     private TextView passwordInput, emailInput, textRegister, textPassword;
 
     String email, password;
+    private boolean passwordVisible;
 
     private FirebaseAuth fAuth;
 
@@ -58,6 +62,8 @@ public class Login extends AppCompatActivity {
         passwordInput = findViewById(R.id.passwordInput);
         emailInput = findViewById(R.id.emailInput);
 
+        seePassword();
+
         //validate the user input
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +80,36 @@ public class Login extends AppCompatActivity {
 
         //Make TextView clickable
         clickableText();
+    }
+
+    private void seePassword() {
+        mPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                final int Right=2;
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    if(motionEvent.getRawX()>= mPassword.getRight()-mPassword.getCompoundDrawables()[Right].getBounds().width()){
+                        int selection = mPassword.getSelectionEnd();
+                        if(passwordVisible){
+                            //set drawable image here
+                            mPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,R.drawable.ic_baseline_visibility_off_24, 0);
+                            // for hide password
+                            mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            passwordVisible=false;
+                        }else {
+                            // set drawable image here
+                            mPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,R.drawable.ic_baseline_visibility_24, 0);
+                            // for show password
+                            mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            passwordVisible=true;
+                        }
+                        mPassword.setSelection(selection);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void clickableText() {
