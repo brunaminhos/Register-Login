@@ -53,14 +53,25 @@
         android:id="@+id/Email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="215dp"
         android:inputType="textEmailAddress"
         android:hint="Email"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintBottom_toTopOf="@+id/emailInput"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
+
+    <TextView
+        android:id="@+id/emailInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:layout_marginBottom="10dp"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/Email"/>
 
     <EditText
         android:id="@+id/password"
@@ -69,17 +80,26 @@
         android:layout_marginTop="20dp"
         android:inputType="textPassword"
         android:hint="Password"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@+id/Email"
         app:layout_constraintBottom_toBottomOf="@id/guideline"/>
 
+
+    <TextView
+        android:id="@+id/passwordInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/password"/>
+
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="115dp"
         android:text="Login"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
@@ -90,8 +110,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="First-time User? Register Here"
-        android:textSize="20sp"
-        android:layout_marginTop="75dp"
+        android:textSize="15sp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
 
@@ -99,13 +119,10 @@
         android:id="@+id/PasswordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:text="Forgotten Password? Click Here"
-        android:textSize="20sp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/Register"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
-        app:layout_constraintVertical_bias="0.0" />
-
+        app:layout_constraintTop_toBottomOf="@+id/Register"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

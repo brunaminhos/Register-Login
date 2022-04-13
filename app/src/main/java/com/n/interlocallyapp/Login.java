@@ -18,6 +18,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,11 +35,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class Login extends AppCompatActivity {
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^" +
+                    "(?=.*[0-9])" +         //at least 1 digit
+                    "(?=.*[a-z])" +         //at least 1 lower case letter
+                    "(?=.*[A-Z])" +         //at least 1 upper case letter
+                    "(?=.*[a-zA-Z])" +      //any letter
+                    "(?=.*[!@#$%^&+=])" +    //at least 1 special character
+                    ".{8,}" +               //at least 8 characters
+                    "$");
+
     EditText mEmail, mPassword;
     Button mLoginBtn;
     FirebaseAuth fAuth;
+
+    TextView passwordInput, emailInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +65,11 @@ public class Login extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         mLoginBtn = findViewById(R.id.loginBtn);
 
+
+
+        passwordInput = findViewById(R.id.passwordInput);
+        emailInput = findViewById(R.id.emailInput);
+
         //validate the user input
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,18 +77,7 @@ public class Login extends AppCompatActivity {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-                // if the user enter an empty value for email or password,it will display an error message
-                if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required!");
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required!");
-                    return;
-                }
-                //defining the length of password, if is less than 6 characters it will display an error message
-                if (password.length() < 6) {
-                    mPassword.setError("Password Must be equal to 6 characters");
+                if (!validateEmail(email) | !validatePassword(password)) {
                     return;
                 }
 
@@ -81,15 +89,12 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, "Logged in Successfully.", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
-                            Toast.makeText(Login.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
+                            emailInput.setText(task.getException().getMessage());
                         }
-
                     }
                 });
             }
         });
-
 
         //Making TextView clickable
         TextView textRegister = findViewById(R.id.Register);
@@ -151,5 +156,39 @@ public class Login extends AppCompatActivity {
         textPassword.setText(sPassword);
         textPassword.setMovementMethod(LinkMovementMethod.getInstance());
 
+    }
+
+    private boolean validateEmail(String email) {
+
+        if (email.isEmpty()) {
+            emailInput.setText("Field can't be empty");//changes the selected item text to this
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setText("Enter a valid email address Eg: user@user.com"); //changes the selected item text to this
+            return false;
+        } else {
+            emailInput.setText("");
+            return true;
+        }
+    }
+
+    private boolean validatePassword(String password) {
+
+        if (password.isEmpty()) {
+            passwordInput.setText("Field can't be empty");
+            return false;
+            //defining the length of password, if is less than 8 characters it will display an error message
+        } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
+            passwordInput.setText("Password must have at least: \n" +
+                    "8 characters \n " +
+                    "One number \n" +
+                    "One upper case letter \n" +
+                    "One lower case letter \n" +
+                    "One special character (!@#$%^&+=)");
+            return false;
+        } else {
+            passwordInput.setText("");
+            return true;
+        }
     }
 }

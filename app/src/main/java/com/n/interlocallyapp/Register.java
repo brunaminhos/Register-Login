@@ -15,9 +15,9 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,17 +34,29 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 //import com.google.android.gms.location.LocationRequest;
 
 
 public class Register extends AppCompatActivity {
-    EditText mEmail, mPassword;
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^" +
+                    "(?=.*[0-9])" +         //at least 1 digit
+                    "(?=.*[a-z])" +         //at least 1 lower case letter
+                    "(?=.*[A-Z])" +         //at least 1 upper case letter
+                    "(?=.*[a-zA-Z])" +      //any letter
+                    "(?=.*[!@#$%^&+=])" +    //at least 1 special character
+                    ".{8,}" +               //at least 8 characters
+                    "$");
+
+        EditText mEmail, mPassword;
     Button mRegisterBtn;
     FirebaseAuth fAuth;
 
+    TextView passwordInput, emailInput, locationView;
+
     // location variables
     Button locationBtn;
-    TextView textView1;
     FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
@@ -58,11 +70,21 @@ public class Register extends AppCompatActivity {
         mRegisterBtn = findViewById(R.id.registerBtn);
         fAuth = FirebaseAuth.getInstance();
 
+        passwordInput = findViewById(R.id.passwordInput);
+        emailInput = findViewById(R.id.emailInput);
+        locationView = findViewById(R.id.locationText);
+
+        //Assign location variables
+        locationBtn = findViewById(R.id.locationBtn);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Register.this);
+
+
         //check if the user has already created one account
         if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
+
 
         // validate user input
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
@@ -71,36 +93,26 @@ public class Register extends AppCompatActivity {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-                // if the user enter an empty value for email or password,it will display an error message
-                if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required!");
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required!");
-                    return;
-                }
-                //defining the length of password, if is less than 6 characters it will display an error message
-                if (password.length() < 6) {
-                    mPassword.setError("Password Must be equal to 6 characters");
+
+                if (!validateEmail(email) | !validatePassword(password)) {
                     return;
                 }
 
                 //register the user into the firebase
                 fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //display error to the user or the result if the user was created
                         if (task.isSuccessful()) {
-                            Toast.makeText(Register.this, "User Created.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Register.this, "User Created!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), Register.class));
                         } else {
-                            Toast.makeText(Register.this, "Error! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            emailInput.setText(task.getException().getMessage());
                         }
 
                     }
                 });
-
             }
         });
 
@@ -115,13 +127,11 @@ public class Register extends AppCompatActivity {
         ClickableSpan clickableSpan1 = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-//                Toast.makeText(Register.this, "One", Toast.LENGTH_SHORT).show();
 
                 //Going from Registration to Login when clicked.
                 Intent loginIntent = new Intent(Register.this, Login.class);
 
                 startActivity(loginIntent);
-
             }
 
             @Override
@@ -138,27 +148,55 @@ public class Register extends AppCompatActivity {
         textLogin.setText(sLogin);
         textLogin.setMovementMethod(LinkMovementMethod.getInstance());
 
-        //Assign location variables
-        locationBtn = findViewById(R.id.locationBtn);
-        textView1 = findViewById(R.id.addressText);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         locationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(Register.this, "Working", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Register.this, "working", Toast.LENGTH_SHORT).show();
                 //check permission
                 if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     // When permission granted
                     getLocation();
-
                 } else {
                     ActivityCompat.requestPermissions(Register.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
                 }
             }
         });
-
     }
+
+    private boolean validateEmail(String email) {
+
+        if (email.isEmpty()) {
+            emailInput.setText("Field can't be empty");//changes the selected item text to this
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setText("Enter a valid email address Eg: user@user.com"); //changes the selected item text to this
+            return false;
+        } else {
+            emailInput.setText("");
+            return true;
+        }
+    }
+
+    private boolean validatePassword(String password) {
+
+        if (password.isEmpty()) {
+            passwordInput.setText("Field can't be empty");
+            return false;
+        //defining the length of password, if is less than 8 characters it will display an error message
+        } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
+        passwordInput.setText("Password must have at least: \n" +
+                "8 characters \n " +
+                "One number \n" +
+                "One upper case letter \n" +
+                "One lower case letter \n" +
+                "One special character (!@#$%^&+=)");
+        return false;
+    } else {
+        passwordInput.setText("");
+        return true;
+    }
+}
 
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -186,7 +224,7 @@ public class Register extends AppCompatActivity {
                         );
 
                         // Set Latitude and Longitude on TextView
-                        textView1.setText("Latitude" + addresses.get(0).getLatitude() + " Longitude " + addresses.get(0).getLongitude());
+//                        textView1.setText("Latitude" + addresses.get(0).getLatitude() + " Longitude " + addresses.get(0).getLongitude());
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -195,5 +233,4 @@ public class Register extends AppCompatActivity {
             }
         });
     }
-
 }

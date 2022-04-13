@@ -53,10 +53,10 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="175dp"
+        android:layout_marginTop="150dp"
         android:text="New here? Create your Account!"
         android:textColor="#FFFFFF"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
@@ -66,14 +66,25 @@
         android:id="@+id/Email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="215dp"
         android:inputType="textEmailAddress"
         android:hint="Email"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintBottom_toTopOf="@+id/emailInput"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
+
+    <TextView
+        android:id="@+id/emailInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:layout_marginBottom="10dp"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/Email"/>
 
     <EditText
         android:id="@+id/password"
@@ -82,40 +93,50 @@
         android:layout_marginTop="20dp"
         android:inputType="textPassword"
         android:hint="Password"
-        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@+id/Email"
         app:layout_constraintBottom_toBottomOf="@id/guideline"/>
 
+
+    <TextView
+        android:id="@+id/passwordInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/locationBtn"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/password"/>
+
     <Button
         android:id="@+id/locationBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/passwordInput"
         android:text="Get Location" />
 
-    <EditText
-        android:id="@+id/addressText"
+    <TextView
+        android:id="@+id/locationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        android:textColor="#FF0000"
+        android:textSize="13sp"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/locationBtn"/>
+        app:layout_constraintTop_toBottomOf="@id/locationBtn"/>
 
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:text="Register"
+        android:layout_marginTop="160dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/addressText" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@id/Login"/>
 
     <TextView
         android:id="@+id/Login"
