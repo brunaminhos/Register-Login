@@ -108,8 +108,6 @@ public class Login extends AppCompatActivity {
         ClickableSpan clickableSpan2 = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Toast.makeText(Login.this, "Two", Toast.LENGTH_SHORT).show();
-
 //                Going from Login to password reset when clicked.
                 Intent passwordIntent = new Intent(Login.this, ForgotPassword.class);
 

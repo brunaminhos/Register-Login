@@ -1,8 +1,10 @@
 package com.n.interlocallyapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -46,25 +48,39 @@ public class ForgotPassword extends AppCompatActivity {
                     return;
                 }
                 reset();
-    }
+            }
 
-    private void reset() {
-        //authenticate the user
-        fAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            private void reset() {
+
+                //authenticate the user
+                fAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ForgotPassword.this, "Please check your email.", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), Login.class));
-                            finish();
+                            showAlertDialog("Please check your email.");
+//                            Toast.makeText(ForgotPassword.this, "Please check your email.", Toast.LENGTH_SHORT).show();
                         } else {
                             error.setText(task.getException().getMessage());
                         }
                     }
                 });
-    }
+            }
         });
+    }
+
+    private void showAlertDialog(String s) {
+
+        AlertDialog dialog = new AlertDialog.Builder(ForgotPassword.this)
+                .setTitle("Password Reset")
+                .setMessage(s)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(getApplicationContext(), Login.class));
+                        finish();
+                    }
+                }).create();
+        dialog.show();
     }
 
     private boolean validateEmail(String email) {
