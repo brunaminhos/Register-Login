@@ -5,16 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -30,9 +38,11 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,9 +62,7 @@ public class Register extends AppCompatActivity {
                     ".{8,}" +               //at least 8 characters
                     "$");
 
-    private double latitude;
-    private double longitude;
-    private String password, email;
+    private String password, email,latitude, longitude;;
     private boolean passwordVisible;
 
     private FirebaseAuth fAuth;
@@ -67,11 +75,47 @@ public class Register extends AppCompatActivity {
     private Button locationBtn;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        initiateVariables();
+        seePassword();
+
+        //Check if user already exists in database
+        validation();
+
+        // making text clickable
+        clickableText();
+
+        locationButton();
+        System.out.println("latitude " + latitude + ", longitude " + longitude);
+        locationView.setText("latitude " + latitude + ", longitude " + longitude);
+
+        // validate user input
+        registration();
+    }
+
+    private void locationButton() {
+        locationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //check permission
+                if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // When permission granted
+                    getLocation();
+//                  locationView.setText("latitude " + latitude + ", longitude " + longitude); //changes the selected item text to this
+                } else {
+                    ActivityCompat.requestPermissions(Register.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+                }
+            }
+        });
+    }
+
+    private void initiateVariables() {
         // giving values to attributes from activity
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
@@ -85,64 +129,29 @@ public class Register extends AppCompatActivity {
         //Assign location variables
         locationBtn = findViewById(R.id.locationBtn);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(Register.this);
-
-        seePassword();
-
-        //Check if user already exists in database
-        validation();
-
-        // making text clickable
-        clickableText();
-
-        locationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //check permission
-                if (ActivityCompat.checkSelfPermission(Register.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    // When permission granted
-                    getLocation();
-                } else {
-                    ActivityCompat.requestPermissions(Register.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-                }
-            }
-        });
-
-        // validate user input
-        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                email = mEmail.getText().toString().trim();
-                password = mPassword.getText().toString().trim();
-
-                if (!validateEmail(email) | !validatePassword(password)) {
-                    return;
-                }
-
-                registration();
-            }
-        });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void seePassword() {
         mPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                final int Right=2;
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    if(motionEvent.getRawX()>= mPassword.getRight()-mPassword.getCompoundDrawables()[Right].getBounds().width()){
+                final int Right = 2;
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (motionEvent.getRawX() >= mPassword.getRight() - mPassword.getCompoundDrawables()[Right].getBounds().width()) {
                         int selection = mPassword.getSelectionEnd();
-                        if(passwordVisible){
+                        if (passwordVisible) {
                             //set drawable image here
-                            mPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,R.drawable.ic_baseline_visibility_off_24, 0);
+                            mPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_off_24, 0);
                             // for hide password
                             mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                            passwordVisible=false;
-                        }else {
+                            passwordVisible = false;
+                        } else {
                             // set drawable image here
-                            mPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,R.drawable.ic_baseline_visibility_24, 0);
+                            mPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_visibility_24, 0);
                             // for show password
                             mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                            passwordVisible=true;
+                            passwordVisible = true;
                         }
                         mPassword.setSelection(selection);
                         return true;
@@ -195,25 +204,46 @@ public class Register extends AppCompatActivity {
 
     // Register user on Firebase
     private void registration() {
-
-        //register the user into the firebase
-        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-
+        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                //display error to the user or the result if the user was created
-                if (task.isSuccessful()) {
-                    Toast.makeText(Register.this, "User Created!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), Register.class));
-                } else {
-                    emailInput.setText(task.getException().getMessage());
+            public void onClick(View view) {
+                email = mEmail.getText().toString().trim();
+                password = mPassword.getText().toString().trim();
+
+                user = new User(email, latitude, longitude);
+//
+//                if (!isLocationSaved()) {
+//                    // show my message
+//                    locationView.setText("Location needs to be accessed.");
+//                }else{
+//                    locationView.setText("");
+//                }
+
+                if (!validateEmail(email) | !validatePassword(password)) {
+                    return;
                 }
 
+                //register the user into the firebase
+                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        //display error to the user or the result if the user was created
+                        if (task.isSuccessful()) {
+                            user.createNewUser();
+                            Toast.makeText(Register.this, "User Created!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), Register.class));
+                        } else {
+                            emailInput.setText(task.getException().getMessage());
+                        }
+
+                    }
+                });
             }
         });
     }
 
     // Validate email input
+    @SuppressLint("SetTextI18n")
     private boolean validateEmail(String email) {
 
         if (email.isEmpty()) {
@@ -229,29 +259,36 @@ public class Register extends AppCompatActivity {
     }
 
     // Validate Password Input
+    @SuppressLint("SetTextI18n")
     private boolean validatePassword(String password) {
 
         if (password.isEmpty()) {
             passwordInput.setText("Field can't be empty");
             return false;
-        //defining the length of password, if is less than 8 characters it will display an error message
+            //defining the length of password, if is less than 8 characters it will display an error message
         } else if (!PASSWORD_PATTERN.matcher(password).matches()) {
-        passwordInput.setText("Password must have at least: \n" +
-                "8 characters \n " +
-                "One number \n" +
-                "One upper case letter \n" +
-                "One lower case letter \n" +
-                "One special character (!@#$%^&+=)");
-        return false;
-    } else {
-        passwordInput.setText("");
-        return true;
+            passwordInput.setText("Password must have at least: \n" +
+                    "8 characters \n " +
+                    "One number \n" +
+                    "One upper case letter \n" +
+                    "One lower case letter \n" +
+                    "One special character (!@#$%^&+=)");
+            return false;
+        } else {
+            passwordInput.setText("");
+            return true;
+        }
     }
-}
+
+    private boolean isLocationSaved() {
+        return latitude != "" && longitude != "";
+    }
 
     // Get location
     private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -261,29 +298,15 @@ public class Register extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                //Initialize Location
-                Location location = task.getResult();
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
                 if (location != null) {
-                    try {
-                        //Initialize geoCoder
-                        Geocoder geocoder = new Geocoder(Register.this, Locale.getDefault());
-                        // Initialize Address list
-                        List<Address> addresses = geocoder.getFromLocation(
-                                location.getLatitude(), location.getLongitude(), 1
-                        );
-
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-
-                        // Set Latitude and Longitude on TextView
-//                        textView1.setText("Latitude" + addresses.get(0).getLatitude() + " Longitude " + addresses.get(0).getLongitude());
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    latitude = location.getLongitude() + "";
+                    longitude = location.getLatitude() + "";
+                    locationView.setText(latitude + ", " + longitude);
                 }
             }
         });

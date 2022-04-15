@@ -13,20 +13,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InterlocallyApp">
         <activity
+            android:name=".FeedbackSearch"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".Search"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
             android:name=".ForgotPassword"
             android:exported="false" />
         <activity
             android:name=".Login"
-            android:exported="false" />
-        <activity
-            android:name=".Register"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+    </activity>
+        <activity
+            android:name=".Register"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
