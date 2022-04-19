@@ -42,7 +42,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.util.List;
@@ -93,7 +98,7 @@ public class Register extends AppCompatActivity {
 
         locationButton();
         System.out.println("latitude " + latitude + ", longitude " + longitude);
-        locationView.setText("latitude " + latitude + ", longitude " + longitude);
+//        locationView.setText("latitude " + latitude + ", longitude " + longitude);
 
         // validate user input
         registration();

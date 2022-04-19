@@ -1,6 +1,7 @@
 package com.n.interlocallyapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -22,9 +23,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.regex.Pattern;
 
@@ -43,7 +54,7 @@ public class Login extends AppCompatActivity {
     private Button mLoginBtn;
     private TextView passwordInput, emailInput, textRegister, textPassword;
 
-    String email, password;
+    private String email, password;
     private boolean passwordVisible;
 
     private FirebaseAuth fAuth;
@@ -218,5 +229,50 @@ public class Login extends AppCompatActivity {
             passwordInput.setText("");
             return true;
         }
+    }
+
+//    public void loadNotes(View v){
+//        shopReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                String data = "";
+//
+//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+//                    ShopOwner shopOwner = documentSnapshot.toObject(ShopOwner.class);
+//                    shopOwner.setId(documentSnapshot.getId());
+//
+//                    String email = shopOwner.getEmail();
+//                    String password = shopOwner.getPassword();
+//
+//                    data += "email: " + email + "\npassword: " + password + "\n\n";
+//                }
+//
+//            }
+//        });
+//    }
+
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference shopReference = db.collection("Shop");
+
+        shopReference.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+                if (e != null){
+                    return;
+                }
+
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                    ShopOwner shopOwner = documentSnapshot.toObject(ShopOwner.class);
+                    shopOwner.setId(documentSnapshot.getId());
+
+                    String id = shopOwner.getId();
+                    String email = shopOwner.getEmail();
+                    String password = shopOwner.getPassword();
+                }
+            }
+        });
     }
 }
