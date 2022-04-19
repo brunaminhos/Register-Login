@@ -19,7 +19,8 @@
         <activity
             android:name=".Search"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity">
+        </activity>
         <activity
             android:name=".ForgotPassword"
             android:exported="false" />

@@ -13,6 +13,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,19 +23,18 @@ import java.util.Map;
 public class ShopOwner {
     //Retrieve shop owner information and authenticate user.
 
-    private String id, name, contactNumber, email, password;
+    private String id, name, email, password;
 
     public ShopOwner() {
     }
 
-    public ShopOwner(String name, String contactNumber, String email, String password) {
-        this.name = name;
-        this.contactNumber = contactNumber;
+    public ShopOwner(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
 
+    @Exclude
     public String getId() {
         return id;
     }
@@ -49,14 +49,6 @@ public class ShopOwner {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
     }
 
     public String getEmail() {

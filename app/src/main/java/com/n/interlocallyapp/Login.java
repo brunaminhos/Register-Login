@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -93,6 +94,7 @@ public class Login extends AppCompatActivity {
         clickableText();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void seePassword() {
         mPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -251,28 +253,28 @@ public class Login extends AppCompatActivity {
 //        });
 //    }
 
-    protected void onStart() {
-        super.onStart();
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference shopReference = db.collection("Shop");
-
-        shopReference.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                if (e != null){
-                    return;
-                }
-
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    ShopOwner shopOwner = documentSnapshot.toObject(ShopOwner.class);
-                    shopOwner.setId(documentSnapshot.getId());
-
-                    String id = shopOwner.getId();
-                    String email = shopOwner.getEmail();
-                    String password = shopOwner.getPassword();
-                }
-            }
-        });
-    }
+//    protected void onStart() {
+//        super.onStart();
+//
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        CollectionReference shopReference = db.collection("Shop");
+//
+//        shopReference.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+//                if (e != null){
+//                    return;
+//                }
+//
+//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+//                    ShopOwner shopOwner = documentSnapshot.toObject(ShopOwner.class);
+//                    shopOwner.setId(documentSnapshot.getId());
+//
+//                    String id = shopOwner.getId();
+//                    String email = shopOwner.getEmail();
+//                    String password = shopOwner.getPassword();
+//                }
+//            }
+//        });
+//    }
 }
