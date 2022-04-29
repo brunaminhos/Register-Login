@@ -81,19 +81,27 @@
         android:text="Load"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintBottom_toBottomOf="@id/textViewData"
         app:layout_constraintTop_toBottomOf="@+id/guideline"/>
-
 
     <TextView
         android:id="@+id/textViewData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
-        android:text="fskdjodjfjsk"
+        android:text="Data"
+        app:layout_constraintBottom_toBottomOf="@id/textViewCategories"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/loadBtn"/>
+
+    <TextView
+        android:id="@+id/textViewCategories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text="Category"
         android:layout_marginBottom="75dp"
         app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/loadBtn"/>
+        app:layout_constraintTop_toBottomOf="@+id/textViewData"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

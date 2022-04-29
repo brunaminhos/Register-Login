@@ -1,71 +1,63 @@
 package com.n.interlocallyapp;
-import android.util.Log;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.Exclude;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
-// TO BE FINISHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public class Shops {
 
-    private String email, latitude, longitude;
+    private String id, name, cuisineCategory;
+    private double latitude, longitude;
 
     public Shops() {
     }
 
-    public Shops(String email, String latitude, String longitude) {
-        this.email = email;
+    public Shops(String id, String name, double latitude, double longitude, String cuisineCategory) {
+        this.id = id;
+        this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.cuisineCategory = cuisineCategory;
     }
 
-    public String getEmail() {
-        return email;
+    @Exclude
+    public String getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getLatitude() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public void createNewUser() {
-        String email = getEmail();
-        String latitude = getLatitude();
-        String longitude = getLongitude();
+    public String getCuisineCategory() {
+        return cuisineCategory;
+    }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Map<String, Object> users = new HashMap<>();
-        users.put("email", email);
-        users.put("latitude", latitude);
-        users.put("longitude", longitude);
-
-        DocumentReference documentReference = db.collection("Users").document();
-        documentReference.set(users).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("db", "Success saving data.");
-            }
-        })
-                .addOnFailureListener(e -> Log.d("db_error", "Error"));
+    public void setCuisineCategory(String cuisineCategory) {
+        this.cuisineCategory = cuisineCategory;
     }
 }
