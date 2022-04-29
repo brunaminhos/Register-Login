@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class Search extends AppCompatActivity {
 
-    private String [] items = {"Material", "Design", "Components"};
+    private String[] items = {"Material", "Design", "Components"};
     private AutoCompleteTextView autoCompleteTxt;
     private ArrayAdapter<String> adapterItems;
 
@@ -73,50 +74,55 @@ public class Search extends AppCompatActivity {
         });
 
 
-
-
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 db.collection("Shop")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                String data = "";
-                                String categorias = "";
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            String data = "";
+                            String categorias = "";
 
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-//                                        Shops shop = document.toObject(Shops.class);
-//                                        shop.setId(document.getId());
-
-//                                    Toast.makeText(getApplicationContext(), document.getData().get("ShopOwner").toString() , Toast.LENGTH_SHORT).show();
-
-
-                                    Map<String, Object> categories = (Map<String, Object>) document.getData().get("CuisineCategory");
-                                    Map<String, Object> profile = (Map<String, Object>) document.getData().get("ShopCuisineProfile");
-                                    Map<Double, Object> location = (Map<Double, Object>) document.getData().get("ShopCuisineProfile");
-
-                                    String[] values = categories.values().toArray(new String[0]);
-
-
-                                    String id = document.getId();
-                                    String cuisineCategory = (String) categories.get("Name");
-                                    String name = (String) profile.get("Name");
-                                    double latitude = (double) location.get("latitude");
-                                    double longitude = (double) location.get("longitude");
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Shops shop = document.toObject(Shops.class);
+//                                shop.setId(document.getId());
 //
-                                    data += "ID: " + id + "\nName: " + name + "\nCuisine Category: " + cuisineCategory
-                                            + "\nLatitude: " + latitude + "\nLongitude " + longitude;
+//                                Toast.makeText(getApplicationContext(), document.getData().get("ShopOwner").toString() , Toast.LENGTH_SHORT).show();
 
-                                    categorias = Arrays.toString(values);
 
-                                    }
-                                    textViewData.setText(data);
-                                    textViewCategories.setText(categorias);
+                                Map<String, Object> profile = (Map<String, Object>) document.getData().get("ShopCuisineProfile");
+                                Map<Double, Object> location = (Map<Double, Object>) document.getData().get("ShopCuisineProfile");
+                                Map<Double, Object> categories = (Map<Double, Object>) document.getData().get("CuisineCategory");
+
+//                                String[] values = categories.values().toArray(new String[0]);
+//
+//                                String id = document.getId();
+//                                String name = (String) profile.get("Name");
+//                                double latitude = (double) location.get("latitude");
+//                                double longitude = (double) location.get("longitude");
+//
+//                                data += "ID: " + id + "\nName: " + name + "\nLatitude: "
+//                                        + latitude + "\nLongitude " + longitude + "\n\n";
+//
+//                                categorias = Arrays.toString(values);
                             }
-                        });
+
+//                            Query categoriesLists = db.collection("Shop")
+//                                    .whereEqualTo("CuisineCategory", true)
+//                                    .whereEqualTo("Name", true);
+
+                            textViewData.setText(data);
+//                            textViewCategories.setText(categoriesLists.toString());
+
+                        }
+                    });
+            }
+        });
+    }
+}
 
 //                shopReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 //                    @Override
@@ -154,7 +160,6 @@ public class Search extends AppCompatActivity {
 //                        textViewCategories.setText(categories);
 //                    }
 //                });
-            }
-        });
-    }
-}
+//            }
+//        });
+//    }

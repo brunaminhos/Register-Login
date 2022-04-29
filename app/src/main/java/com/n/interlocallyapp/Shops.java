@@ -6,18 +6,17 @@ import java.util.Objects;
 
 public class Shops {
 
-    private String id, name, cuisineCategory;
+    private String id, name;
     private double latitude, longitude;
 
     public Shops() {
     }
 
-    public Shops(String id, String name, double latitude, double longitude, String cuisineCategory) {
+    public Shops(String id, String name, double latitude, double longitude) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.cuisineCategory = cuisineCategory;
     }
 
     @Exclude
@@ -51,13 +50,5 @@ public class Shops {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
-    }
-
-    public String getCuisineCategory() {
-        return cuisineCategory;
-    }
-
-    public void setCuisineCategory(String cuisineCategory) {
-        this.cuisineCategory = cuisineCategory;
     }
 }
