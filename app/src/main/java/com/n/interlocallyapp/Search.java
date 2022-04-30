@@ -34,6 +34,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -122,11 +124,21 @@ public class Search extends AppCompatActivity {
                                     Log.d(TAG, "Error getting documents: ", task.getException());
                                 }
 
-                            Set<String> set = new HashSet<>(duplicatesCategories);
-//                            Iterator<String> categoriesIterator = set.iterator();
+                                Set<String> set = new HashSet<>(duplicatesCategories);
 
+                                List<String> setAtoZ = new ArrayList<>();
+                                for(String p : set) {
+                                    setAtoZ.add(p);
+                                }
+                                Collections.sort(setAtoZ, new Comparator<String>() {
+                                    @Override
+                                    public int compare(String o1, String o2) {
+                                        return o1.compareTo(
+                                                o2);
+                                    }
+                                });
 
-                                categories += set;
+                                categories += setAtoZ;
 
                             textViewCategories.setText(categories);
                         }
