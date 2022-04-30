@@ -3,5 +3,6 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="select">Select Item</string>
+    <string name="title_activity_maps">MapsActivity</string>
 
 </resources>
