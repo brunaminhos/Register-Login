@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -19,14 +20,21 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +59,10 @@ public class Search extends AppCompatActivity {
     private CollectionReference shopReference = db.collection("Shop");
     private DocumentReference ref = db.collection("Shop").document();
 
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("Shop");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +85,31 @@ public class Search extends AppCompatActivity {
             }
         });
 
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                String value = dataSnapshot.getValue(String.class);
+//                Log.d(TAG, "Value is: " + value);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                Log.w(TAG, "Failed to read value.", error.toException());
+//            }
+//        });
+
+        textViewData.setText(myRef.child("ShopCuisineProfile").get().toString());
+
+//        loadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
+//                startActivity(categoryIntent);
+//            }
+//        });
 
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +123,10 @@ public class Search extends AppCompatActivity {
                             String data = "";
                             String categorias = "";
 
+                            String name = null;
+                            double latitude = 0;
+                            double longitude = 0;
+                            String stringLongitude = null;
                             for (QueryDocumentSnapshot document : task.getResult()) {
 //                                Shops shop = document.toObject(Shops.class);
 //                                shop.setId(document.getId());
@@ -94,14 +135,25 @@ public class Search extends AppCompatActivity {
 
 
                                 Map<String, Object> profile = (Map<String, Object>) document.getData().get("ShopCuisineProfile");
-                                Map<Double, Object> location = (Map<Double, Object>) document.getData().get("ShopCuisineProfile");
-                                Map<Double, Object> categories = (Map<Double, Object>) document.getData().get("CuisineCategory");
 
+
+                                String stringGeoPoint = profile.get("location").toString();
+                                String stringLatitude = stringGeoPoint.substring(0, stringGeoPoint.indexOf(","));
+                                stringLatitude = stringLatitude.substring(stringLatitude.indexOf("="), stringLatitude.length());
+                                stringLatitude = stringLatitude.substring(1, stringLatitude.length());
+                                stringLongitude = stringGeoPoint.substring(stringGeoPoint.indexOf(","), stringGeoPoint.length());
+                                stringLongitude = stringLongitude.substring(stringLongitude.indexOf("="), stringLongitude.length());
+                                stringLongitude = stringLongitude.substring(1, stringLongitude.length() - 2);
+                                latitude = Double.parseDouble(stringLatitude);
+                                longitude = Double.parseDouble(stringLongitude);
+
+
+                                Map<Double, Object> category = (Map<Double, Object>) document.getData().get("CuisineCategory");
 //                                String[] values = categories.values().toArray(new String[0]);
 //
 //                                String id = document.getId();
-//                                String name = (String) profile.get("Name");
-//                                double latitude = (double) location.get("latitude");
+                                name = (String) profile.get("Name");
+//                                latitude = (double) location.getLatitude();
 //                                double longitude = (double) location.get("longitude");
 //
 //                                data += "ID: " + id + "\nName: " + name + "\nLatitude: "
@@ -114,7 +166,17 @@ public class Search extends AppCompatActivity {
 //                                    .whereEqualTo("CuisineCategory", true)
 //                                    .whereEqualTo("Name", true);
 
-                            textViewData.setText(data);
+                            textViewData.setText(stringLongitude);
+
+                            /**
+                             * Sends the latitude and longitude to the MapsActivity class.
+                             */
+                            LatLng position = new LatLng(latitude, longitude);
+                            Bundle args = new Bundle();
+                            args.putParcelable("longLat_dataProvider", position);
+                            Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
+                            categoryIntent.putExtras(args);
+                            startActivity(categoryIntent);
 //                            textViewCategories.setText(categoriesLists.toString());
 
                         }

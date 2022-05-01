@@ -3,9 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.341" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.341" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_feedback_search.xml" value="0.43645833333333334" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_forgot_password.xml" value="0.43645833333333334" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_login.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_manifest.xml" value="0.15729166666666666" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_map.xml" value="0.15729166666666666" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_register.xml" value="0.1" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_search.xml" value="0.43645833333333334" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/dropdown_item.xml" value="0.43645833333333334" />
         <entry key="..\:/Users/joci_/Documents/Register-Login/app/src/main/res/drawable/back.xml" value="0.1495" />
         <entry key="..\:/Users/joci_/Documents/Register-Login/app/src/main/res/drawable/box.xml" value="0.1" />
         <entry key="..\:/Users/joci_/Documents/Register-Login/app/src/main/res/drawable/logout.xml" value="0.205" />
