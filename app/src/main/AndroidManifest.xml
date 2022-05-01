@@ -49,15 +49,9 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="${MAPS_API_KEY}" />
-
         <activity
             android:name=".MapsActivity"
             android:exported="false" >
-<!--            android:label="@string/title_activity_maps" >-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.n.interlocallyapp.Map" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
         </activity>
     </application>
 
