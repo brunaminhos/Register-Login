@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -15,11 +16,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -113,12 +116,30 @@ public class Search extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        double latitude = 0;
+                        double longitude = 0;
+                        String shopName = "";
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
-                                    Map<String, Object> data = document.getData();
-                                    Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
-                                    Map<String, Object> category = (Map<String, Object>) data.get("CuisineCategory");
+                                    Map<String, Object> shop = document.getData();
+                                    Map<String, Object> product = (Map<String, Object>) shop.get("ShopCuisineProduct");
+                                    Map<String, Object> category = (Map<String, Object>) shop.get("CuisineCategory");
+                                    for (Map.Entry<String, Object> entry : shop.entrySet()) {
+                                        if (entry.getKey().equals("ShopCuisineProfile")) {
+                                            Map<String, Object> shopCuisineProfile = (Map<String, Object>) entry.getValue();
+                                            for (Map.Entry<String, Object> dataEntry : shopCuisineProfile.entrySet()) {
+                                                if (dataEntry.getKey().equals("location")) {
+                                                    duplicatesCategories.add(dataEntry.getValue().toString());
+                                                    Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                                    GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
+                                                    latitude = geoPoint.getLatitude();
+                                                    longitude = geoPoint.getLongitude();
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                            }
+                                        }
+                                    }
                                     for (Map.Entry<String, Object> entry : category.entrySet()) {
                                         for (Map.Entry<String, Object> entry2 : product.entrySet()) {
                                             Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
@@ -151,6 +172,15 @@ public class Search extends AppCompatActivity {
                                         o2);
                             }
                         });
+
+                        LatLng position = new LatLng(latitude, longitude);
+                        Bundle args = new Bundle();
+                        args.putParcelable("longLat_dataProvider", position);
+                        Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
+                        categoryIntent.putExtras(args);
+                        categoryIntent.putExtra("name_dataProvider", shopName);
+                        startActivity(categoryIntent);
+
                         data += duplicatesProducts;
                     }
                 });
