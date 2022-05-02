@@ -27,23 +27,23 @@ public class ProductInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(ProductInfo.this, "Working", Toast.LENGTH_SHORT).show();
-                showAlertDialog();
+//                showAlertDialog();
             }
         });
     }
 
-    private void showAlertDialog() {
-
-        AlertDialog dialog = new AlertDialog.Builder(ProductInfo.this)
-                .setTitle("Password Reset")
-                .setMessage(s)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(getApplicationContext(), Login.class));
-                        finish();
-                    }
-                }).create();
-        dialog.show();
-    }
+//    private void showAlertDialog() {
+//
+//        AlertDialog dialog = new AlertDialog.Builder(ProductInfo.this)
+//                .setTitle("Password Reset")
+//                .setMessage(s)
+//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        startActivity(new Intent(getApplicationContext(), Login.class));
+//                        finish();
+//                    }
+//                }).create();
+//        dialog.show();
+//    }
 }
