@@ -47,57 +47,72 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="709dp" />
+        app:layout_constraintGuide_begin="365dp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/feedbackText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="199dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="500dp"
+        android:layout_marginBottom="128dp"
         android:text="Leave your Rating and Feedback!"
-        android:textSize="24sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="250dp"
-        android:layout_marginBottom="24dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <RatingBar
-            android:id="@+id/ratingBar2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:foregroundGravity="center_horizontal"
-            android:progressBackgroundTint="#FF9800"
-            tools:ignore="SpeakableTextPresentCheck"
-            tools:layout_editor_absoluteX="85dp"
-            tools:layout_editor_absoluteY="285dp" />
+    <TextView
+        android:id="@+id/tvFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Very Dissatisfied"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/feedbackText"/>
 
-    </LinearLayout>
+    <RatingBar
+        android:id="@+id/ratingBar2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:drawableRight="@drawable/ic_baseline_visibility_off_24"
+        android:foregroundGravity="center_horizontal"
+        android:longClickable="false"
+        android:numStars="5"
+        android:progressBackgroundTint="#434040"
+        android:progressTint="#FF9800"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/tvFeedback" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/feedbackRating"
+        android:layout_width="367dp"
+        android:layout_height="142dp"
+        android:background="#EFEFEF"
+        android:hint="Write your feedback here"
+        android:gravity="start|top"
+        android:ems="0"
+        android:lines="4"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar2"/>
+
+    <Button
+        android:id="@+id/feedbackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        tools:layout_editor_absoluteX="240dp"
-        tools:layout_editor_absoluteY="250dp" />
+        android:layout_marginTop="115dp"
+        android:text="Send"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"/>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
