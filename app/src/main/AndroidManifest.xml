@@ -13,6 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InterlocallyApp">
+        <activity
+            android:name=".ProductInfo"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
@@ -24,7 +28,7 @@
         <activity
             android:name=".Search"
             android:exported="false"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ForgotPassword"
             android:exported="false" />
@@ -48,24 +52,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-<!--            <intent-filter-->
-<!--                android:autoVerify="true"-->
-<!--                tools:targetApi="m">-->
-<!--            <action android:name="android.intent.action.VIEW"/>-->
-<!--            <category android:name="android.intent.category.DEFAULT"/>-->
-<!--            <category android:name="android.intent.category.BROWSABLE"/>-->
-<!--            <data-->
-<!--                android:host="interlocallyapp.page.link"-->
-<!--                android:scheme="https"/>-->
-<!--            </intent-filter>-->
-        </activity>
-
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="${MAPS_API_KEY}" />
-        <activity
-            android:name=".MapsActivity"
-            android:exported="false" >
+            <!-- <intent-filter -->
+            <!-- android:autoVerify="true" -->
+            <!-- tools:targetApi="m"> -->
+            <!-- <action android:name="android.intent.action.VIEW"/> -->
+            <!-- <category android:name="android.intent.category.DEFAULT"/> -->
+            <!-- <category android:name="android.intent.category.BROWSABLE"/> -->
+            <!-- <data -->
+            <!-- android:host="interlocallyapp.page.link" -->
+            <!-- android:scheme="https"/> -->
+            <!-- </intent-filter> -->
         </activity>
     </application>
 
