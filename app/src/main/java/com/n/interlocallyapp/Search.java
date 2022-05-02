@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -55,6 +56,7 @@ public class Search extends AppCompatActivity {
     private List<String> duplicatesProducts= new ArrayList<>();
 
     private Button loadButton;
+    private Button searchButton;
     private TextView textViewData, textViewCategories;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -68,6 +70,7 @@ public class Search extends AppCompatActivity {
         categoryFinder();
 
         loadButton = findViewById(R.id.loadBtn);
+        searchButton = findViewById(R.id.SearchBtn);
         textViewData = findViewById(R.id.textViewData);
         textViewCategories = findViewById(R.id.textViewCategories);
         autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
@@ -92,7 +95,7 @@ public class Search extends AppCompatActivity {
         });
 
 
-        autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
