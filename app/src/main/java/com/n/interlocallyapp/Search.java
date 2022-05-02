@@ -2,13 +2,9 @@ package com.n.interlocallyapp;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -20,37 +16,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Search extends AppCompatActivity {
 
-    private String[] items = {"Material", "Design", "Components"};
-    private AutoCompleteTextView autoCompleteTxt;
-    private ArrayAdapter<String> adapterItems;
+    private String data = "";
+    private String categories = "";
+    private String selectedCategory;
+    private AutoCompleteTextView autoCompleteCategoryTxt, autoCompleteProductsTxt;
+    private ArrayAdapter<String> adapterCategories;
+    private ArrayAdapter<String> adapterProducts;
+    private List<String> setCategories = new ArrayList<>();
+    private List<String> setProducts = new ArrayList<>();
+    private List<String> duplicatesCategories = new ArrayList<>();
+    private List<String> duplicatesProducts= new ArrayList<>();
 
-    private Button loadButton, mapButton;
+    private Button loadButton;
     private TextView textViewData, textViewCategories;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,103 +55,133 @@ public class Search extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        categoryFinder();
+
         loadButton = findViewById(R.id.loadBtn);
-        mapButton = findViewById(R.id.mapBtn);
         textViewData = findViewById(R.id.textViewData);
         textViewCategories = findViewById(R.id.textViewCategories);
-        autoCompleteTxt = findViewById(R.id.auto_complete_txt);
+        autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
+        autoCompleteProductsTxt = findViewById(R.id.auto_complete_product_txt);
 
-        adapterItems = new ArrayAdapter<String>(this, R.layout.dropdown_item, items);
+        adapterCategories = new ArrayAdapter<String>(this, R.layout.dropdown_item, setCategories);
+        adapterProducts = new ArrayAdapter<>(this, R.layout.dropdown_item, setProducts);
 
-        autoCompleteTxt.setAdapter(adapterItems);
+        adapterCategories.setDropDownViewResource(R.layout.dropdown_item);
 
-        autoCompleteTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autoCompleteCategoryTxt.setAdapter(adapterCategories);
+        autoCompleteProductsTxt.setAdapter(adapterProducts);
+
+        autoCompleteCategoryTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
                 Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
+
+                productsFinder(selectedCategory);
             }
         });
 
-        mapButton.setOnClickListener(new View.OnClickListener() {
+
+        autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                showAlertDialog();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String item = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
             }
         });
 
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopReference
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                String data = "";
-                                String categories = "";
-                                List<String> duplicatesCategories = new ArrayList<>();
-                                List<String> noDuplicatedCategories = new ArrayList<>();
-
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        if (document.exists()) {
-                                            Map<String, Object> cuisineCategory = document.getData();
-                                            for (Map.Entry<String, Object> entry : cuisineCategory.entrySet()) {
-                                                if (entry.getKey().equals("CuisineCategory")) {
-                                                    Map<String, Object> categoryName = (Map<String, Object>) entry.getValue();
-                                                    for (Map.Entry<String, Object> dataEntry : categoryName.entrySet()) {
-                                                        if (dataEntry.getKey().equals("Name")) {
-                                                            duplicatesCategories.add(dataEntry.getValue().toString());
-                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                                            Log.d("TAG", dataEntry.getValue().toString());
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
-                                            Log.d("TAG", "No such document");
-                                        }
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-
-                                Set<String> set = new HashSet<>(duplicatesCategories);
-
-                                List<String> setAtoZ = new ArrayList<>();
-                                for(String p : set) {
-                                    setAtoZ.add(p);
-                                }
-                                Collections.sort(setAtoZ, new Comparator<String>() {
-                                    @Override
-                                    public int compare(String o1, String o2) {
-                                        return o1.compareTo(
-                                                o2);
-                                    }
-                                });
-
-                                categories += setAtoZ;
-
-                            textViewCategories.setText(categories);
-                        }
-                });
+                textViewCategories.setText(categories);
+                textViewData.setText(data);
             }
         });
     }
 
-    private void showAlertDialog() {
-        AlertDialog dialog = new AlertDialog.Builder(Search.this)
-                .setTitle("Map")
-                .setMessage("")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    private void productsFinder(String category) {
+        shopReference
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(getApplicationContext(), Login.class));
-                        finish();
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    List<String> transList = new ArrayList<>();
+                                    Map<String, Object> data = document.getData();
+                                    Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
+                                    for (Map.Entry<String, Object> entry : product.entrySet()) {
+                                        Map<String, Object> productData = (Map<String, Object>) entry.getValue();
+                                        for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
+                                            if (dataEntry.getKey().equals("Name")) {
+                                                duplicatesProducts.add(dataEntry.getValue().toString());
+//                                                Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                                Log.d("TAG", dataEntry.getValue().toString());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Set<String> set = new HashSet<>(duplicatesProducts);
+                        for (String p : set) {
+                            setProducts.add(p);
+                        }
+                        Collections.sort(setProducts, new Comparator<String>() {
+                            @Override
+                            public int compare(String o1, String o2) {
+                                return o1.compareTo(
+                                        o2);
+                            }
+                        });
+                        data += setProducts;
                     }
-                }).create();
-        dialog.show();
+                });
+    }
+
+    private void categoryFinder() {
+        shopReference
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    Map<String, Object> cuisineCategory = document.getData();
+                                    for (Map.Entry<String, Object> entry : cuisineCategory.entrySet()) {
+                                        if (entry.getKey().equals("CuisineCategory")) {
+                                            Map<String, Object> categoryName = (Map<String, Object>) entry.getValue();
+                                            for (Map.Entry<String, Object> dataEntry : categoryName.entrySet()) {
+                                                if (dataEntry.getKey().equals("Name")) {
+                                                    duplicatesCategories.add(dataEntry.getValue().toString());
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
+                                    Log.d("TAG", "No such document");
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                        Set<String> set = new HashSet<>(duplicatesCategories);
+                        for (String p : set) {
+                            setCategories.add(p);
+                        }
+                        Collections.sort(setCategories, new Comparator<String>() {
+                            @Override
+                            public int compare(String o1, String o2) {
+                                return o1.compareTo(
+                                        o2);
+                            }
+                        });
+                        categories += setCategories;
+                    }
+                });
     }
 }
