@@ -59,6 +59,14 @@
 <!--                android:scheme="https"/>-->
 <!--            </intent-filter>-->
         </activity>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false" >
+        </activity>
     </application>
 
 </manifest>
