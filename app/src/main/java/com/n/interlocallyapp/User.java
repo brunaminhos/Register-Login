@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +14,15 @@ import java.util.Map;
 public class User {
 
     private String userID;
-    private String email, latitude, longitude;
+    private String email;
+    private GeoPoint location;
 
     public User() {
     }
 
-    public User(String email, String latitude, String longitude) {
+    public User(String email, GeoPoint location) {
         this.email = email;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.location = location;
     }
 
     public String getEmail() {
@@ -32,33 +33,23 @@ public class User {
         this.email = email;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public GeoPoint getLocation() {
+        return location;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
     public void createNewUser() {
         String email = getEmail();
-        String latitude = getLatitude();
-        String longitude = getLongitude();
+        GeoPoint location = getLocation();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> users = new HashMap<>();
         users.put("email", email);
-        users.put("latitude", latitude);
-        users.put("longitude", longitude);
+        users.put("location", location);
 
         userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 

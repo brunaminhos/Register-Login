@@ -3,9 +3,11 @@ package com.n.interlocallyapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +19,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView categoryClick, feedbackClick;
@@ -24,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        Uri uri = getIntent().getData();
+//        if (uri != null){
+//            List<String> params = uri.getPathSegments();
+//            String id = params.get(params.size() - 1);
+//            Toast.makeText(this, "id: " + id, Toast.LENGTH_SHORT).show();
+//        }
 
         categoryClick = findViewById(R.id.categoryText);
         feedbackClick = findViewById(R.id.feedbackText);

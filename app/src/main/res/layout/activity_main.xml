@@ -60,13 +60,15 @@
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="logout"
-        app:layout_constraintEnd_toEndOf="@id/guidelineLogout"
-        app:layout_constraintTop_toTopOf="@id/guidelineTop"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"
-        android:onClick="logout"
         android:background="@null"
-        android:src="@drawable/logout"/>
+        android:contentDescription="logout"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:onClick="logout"
+        android:src="@drawable/logout"
+        app:layout_constraintEnd_toEndOf="@id/guidelineLogout"
+        app:layout_constraintTop_toBottomOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@id/guidelineTop" />
 
     <TextView
         android:id="@+id/categoryText"

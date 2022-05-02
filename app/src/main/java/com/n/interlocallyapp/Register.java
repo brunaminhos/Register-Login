@@ -46,6 +46,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -67,7 +68,7 @@ public class Register extends AppCompatActivity {
                     ".{8,}" +               //at least 8 characters
                     "$");
 
-    private String password, email,latitude, longitude;;
+    private String password, email, latitude, longitude;;
     private boolean passwordVisible;
 
     private FirebaseAuth fAuth;
@@ -215,8 +216,15 @@ public class Register extends AppCompatActivity {
                 email = mEmail.getText().toString().trim();
                 password = mPassword.getText().toString().trim();
 
-                user = new User(email, latitude, longitude);
-//
+                if(latitude == null || longitude == null){
+                    locationView.setText("Please select location");
+                    return;
+                }
+
+                GeoPoint location = new GeoPoint(Double.parseDouble(latitude), Double.parseDouble(longitude));
+
+                user = new User(email,location);
+
 //                if (!isLocationSaved()) {
 //                    // show my message
 //                    locationView.setText("Location needs to be accessed.");
@@ -309,8 +317,8 @@ public class Register extends AppCompatActivity {
             public void onSuccess(Location location) {
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
-                    latitude = location.getLongitude() + "";
-                    longitude = location.getLatitude() + "";
+                    longitude = location.getLongitude() + "";
+                    latitude = location.getLatitude() + "";
                     locationView.setText(latitude + ", " + longitude);
                 }
             }

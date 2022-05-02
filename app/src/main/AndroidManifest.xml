@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.n.interlocallyapp">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -12,30 +13,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InterlocallyApp">
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
+
         <activity
             android:name=".FeedbackSearch"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".Search"
             android:exported="false"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".ForgotPassword"
             android:exported="false" />
         <activity
             android:name=".Login"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-    </activity>
+        </activity>
         <activity
             android:name=".Register"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -44,6 +48,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+<!--            <intent-filter-->
+<!--                android:autoVerify="true"-->
+<!--                tools:targetApi="m">-->
+<!--            <action android:name="android.intent.action.VIEW"/>-->
+<!--            <category android:name="android.intent.category.DEFAULT"/>-->
+<!--            <category android:name="android.intent.category.BROWSABLE"/>-->
+<!--            <data-->
+<!--                android:host="interlocallyapp.page.link"-->
+<!--                android:scheme="https"/>-->
+<!--            </intent-filter>-->
         </activity>
     </application>
 
