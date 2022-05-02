@@ -38,6 +38,7 @@ public class Search extends AppCompatActivity {
 
     private String data = "";
     private String categories = "";
+    private String selectedCategory;
     private AutoCompleteTextView autoCompleteCategoryTxt, autoCompleteProductsTxt;
     private ArrayAdapter<String> adapterCategories;
     private ArrayAdapter<String> adapterProducts;
@@ -48,9 +49,6 @@ public class Search extends AppCompatActivity {
 
 
     private Button loadButton, searchButton;
-  
-    private Button loadButton;
-    private Button searchButton;
   
     private TextView textViewData, textViewCategories;
 
@@ -65,9 +63,9 @@ public class Search extends AppCompatActivity {
         categoryFinder();
 
         loadButton = findViewById(R.id.loadBtn);
-      
+
         searchButton = findViewById(R.id.searchBtn);
-      
+
         searchButton = findViewById(R.id.SearchBtn);
 
         textViewData = findViewById(R.id.textViewData);
@@ -78,15 +76,13 @@ public class Search extends AppCompatActivity {
         adapterCategories = new ArrayAdapter<String>(this, R.layout.dropdown_item, setCategories);
         adapterProducts = new ArrayAdapter<>(this, R.layout.dropdown_item, setProducts);
 
-        adapterCategories.setDropDownViewResource(R.layout.dropdown_item);
-
         autoCompleteCategoryTxt.setAdapter(adapterCategories);
         autoCompleteProductsTxt.setAdapter(adapterProducts);
 
         autoCompleteCategoryTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCategory = parent.getItemAtPosition(position).toString();
+                selectedCategory = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
 
                 productsFinder(selectedCategory);
@@ -94,89 +90,10 @@ public class Search extends AppCompatActivity {
                 autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String selectedProduct = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
+//                        String selectedProduct = parent.getItemAtPosition(position).toString();
+//                        Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
                     }
-                })
-            }
-        });
-
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                shopReference
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                String data = "";
-                                String categories = "";
-                                double latitude = 0;
-                                double longitude = 0;
-                                String shopName = "";
-                                List<String> duplicatesCategories = new ArrayList<>();
-                                List<String> noDuplicatedCategories = new ArrayList<>();
-
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        if (document.exists()) {
-                                            Map<String, Object> shop = document.getData();
-                                            for (Map.Entry<String, Object> entry : shop.entrySet()) {
-                                                if (entry.getKey().equals("ShopCuisineProfile")) {
-                                                    Map<String, Object> shopCuisineProfile = (Map<String, Object>) entry.getValue();
-                                                    for (Map.Entry<String, Object> dataEntry : shopCuisineProfile.entrySet()) {
-                                                        if (dataEntry.getKey().equals("location")) {
-                                                            duplicatesCategories.add(dataEntry.getValue().toString());
-                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                                            GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
-                                                            latitude = geoPoint.getLatitude();
-                                                            longitude = geoPoint.getLongitude();
-                                                            Log.d("TAG", dataEntry.getValue().toString());
-                                                        }
-                                                        if (dataEntry.getKey().equals("Name")) {
-                                                            duplicatesCategories.add(dataEntry.getValue().toString());
-                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                                            shopName = dataEntry.getValue().toString();
-                                                            Log.d("TAG", dataEntry.getValue().toString());
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
-                                            Log.d("TAG", "No such document");
-                                        }
-                                    }
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
-                                }
-
-                                Set<String> set = new HashSet<>(duplicatesCategories);
-
-                                List<String> setAtoZ = new ArrayList<>();
-                                for(String p : set) {
-                                    setAtoZ.add(p);
-                                }
-                                Collections.sort(setAtoZ, new Comparator<String>() {
-                                    @Override
-                                    public int compare(String o1, String o2) {
-                                        return o1.compareTo(
-                                                o2);
-                                    }
-                                });
-
-                                categories += setAtoZ;
-
-                                LatLng position = new LatLng(latitude, longitude);
-                                Bundle args = new Bundle();
-                                args.putParcelable("longLat_dataProvider", position);
-                                Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
-                                categoryIntent.putExtras(args);
-                                categoryIntent.putExtra("name_dataProvider", shopName);
-                                startActivity(categoryIntent);
-
+                });
             }
         });
 
@@ -188,12 +105,93 @@ public class Search extends AppCompatActivity {
             }
         });
 
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(Search.this, "Add Map", Toast.LENGTH_SHORT).show();
+                getMap();
             }
         });
+    }
+
+    private void getMap() {
+        shopReference
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        double latitude = 0;
+                        double longitude = 0;
+                        String shopName = "";
+
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+//                                        if (document.exists()) {
+//                                            Map<String, Object> data = document.getData();
+//                                            Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
+//                                            Map<String, Object> category = (Map<String, Object>) data.get("CuisineCategory");
+//                                            for (Map.Entry<String, Object> entry : category.entrySet()) {
+//                                                for (Map.Entry<String, Object> entry2 : product.entrySet()) {
+//                                                    Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
+//                                                    for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
+//                                                        if (dataEntry.getKey().equals("Name") && entry.getValue().equals(selectedCategory)) {
+//                                                            duplicatesProducts.add(dataEntry.getValue().toString());
+//                                                            Log.d("TAG", dataEntry.getValue().toString());
+//                                                        }
+
+                                if (document.exists()) {
+                                    Map<String, Object> shop = document.getData();
+                                    for (Map.Entry<String, Object> entry : shop.entrySet()) {
+                                        if (entry.getKey().equals("ShopCuisineProfile")) {
+                                            Map<String, Object> profileMap = (Map<String, Object>) entry.getValue();
+                                            Map<String, Object> locationPerCategory; // trabalhar nisso
+                                            for (Map.Entry<String, Object> dataEntry : profileMap.entrySet()) {
+                                                if (dataEntry.getKey().equals("location")) {
+//                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                                    GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
+                                                    latitude = geoPoint.getLatitude();
+                                                    longitude = geoPoint.getLongitude();
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                                if (dataEntry.getKey().equals("Name")) {
+                                                    Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                                    shopName = dataEntry.getValue().toString();
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
+                                    Log.d("TAG", "No such document");
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                        setProducts.clear();
+                        Set<String> set = new HashSet<>(duplicatesProducts);
+                        for (String p : set) {
+                            setProducts.add(p);
+                        }
+                        Collections.sort(setProducts, new Comparator<String>() {
+                            @Override
+                            public int compare(String o1, String o2) {
+                                return o1.compareTo(
+                                        o2);
+                            }
+                        });
+
+                        LatLng position = new LatLng(latitude, longitude);
+                        Bundle args = new Bundle();
+                        args.putParcelable("longLat_dataProvider", position);
+                        Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
+                        categoryIntent.putExtras(args);
+                        categoryIntent.putExtra("name_dataProvider", shopName);
+                        startActivity(categoryIntent);
+                    }
+                });
     }
 
     private void productsFinder(String selectedCategory) {
@@ -203,30 +201,12 @@ public class Search extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        double latitude = 0;
-                        double longitude = 0;
-                        String shopName = "";
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
-                                    Map<String, Object> shop = document.getData();
-                                    Map<String, Object> product = (Map<String, Object>) shop.get("ShopCuisineProduct");
-                                    Map<String, Object> category = (Map<String, Object>) shop.get("CuisineCategory");
-                                    for (Map.Entry<String, Object> entry : shop.entrySet()) {
-                                        if (entry.getKey().equals("ShopCuisineProfile")) {
-                                            Map<String, Object> shopCuisineProfile = (Map<String, Object>) entry.getValue();
-                                            for (Map.Entry<String, Object> dataEntry : shopCuisineProfile.entrySet()) {
-                                                if (dataEntry.getKey().equals("location")) {
-                                                    duplicatesCategories.add(dataEntry.getValue().toString());
-                                                    Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                                    GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
-                                                    latitude = geoPoint.getLatitude();
-                                                    longitude = geoPoint.getLongitude();
-                                                    Log.d("TAG", dataEntry.getValue().toString());
-                                                }
-                                            }
-                                        }
-                                    }
+                                    Map<String, Object> data = document.getData();
+                                    Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
+                                    Map<String, Object> category = (Map<String, Object>) data.get("CuisineCategory");
                                     for (Map.Entry<String, Object> entry : category.entrySet()) {
                                         for (Map.Entry<String, Object> entry2 : product.entrySet()) {
                                             Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
@@ -259,15 +239,6 @@ public class Search extends AppCompatActivity {
                                         o2);
                             }
                         });
-
-                        LatLng position = new LatLng(latitude, longitude);
-                        Bundle args = new Bundle();
-                        args.putParcelable("longLat_dataProvider", position);
-                        Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
-                        categoryIntent.putExtras(args);
-                        categoryIntent.putExtra("name_dataProvider", shopName);
-                        startActivity(categoryIntent);
-
                         data += duplicatesProducts;
                     }
                 });
