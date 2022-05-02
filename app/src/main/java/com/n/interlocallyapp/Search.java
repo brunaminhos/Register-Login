@@ -109,7 +109,6 @@ public class Search extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
                                     List<String> transList = new ArrayList<>();
-
                                     Map<String, Object> data = document.getData();
                                     Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
                                     for (Map.Entry<String, Object> entry : product.entrySet()) {
