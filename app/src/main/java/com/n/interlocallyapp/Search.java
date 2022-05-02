@@ -46,7 +46,12 @@ public class Search extends AppCompatActivity {
     private List<String> duplicatesCategories = new ArrayList<>();
     private List<String> duplicatesProducts= new ArrayList<>();
 
+
     private Button loadButton, searchButton;
+  
+    private Button loadButton;
+    private Button searchButton;
+  
     private TextView textViewData, textViewCategories;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -60,7 +65,11 @@ public class Search extends AppCompatActivity {
         categoryFinder();
 
         loadButton = findViewById(R.id.loadBtn);
+      
         searchButton = findViewById(R.id.searchBtn);
+      
+        searchButton = findViewById(R.id.SearchBtn);
+
         textViewData = findViewById(R.id.textViewData);
         textViewCategories = findViewById(R.id.textViewCategories);
         autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
@@ -81,14 +90,92 @@ public class Search extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
 
                 productsFinder(selectedCategory);
+
                 autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                String selectedProduct = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
                     }
-                });
+                })
+            }
+        });
 
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                shopReference
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                String data = "";
+                                String categories = "";
+                                double latitude = 0;
+                                double longitude = 0;
+                                String shopName = "";
+                                List<String> duplicatesCategories = new ArrayList<>();
+                                List<String> noDuplicatedCategories = new ArrayList<>();
+
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        if (document.exists()) {
+                                            Map<String, Object> shop = document.getData();
+                                            for (Map.Entry<String, Object> entry : shop.entrySet()) {
+                                                if (entry.getKey().equals("ShopCuisineProfile")) {
+                                                    Map<String, Object> shopCuisineProfile = (Map<String, Object>) entry.getValue();
+                                                    for (Map.Entry<String, Object> dataEntry : shopCuisineProfile.entrySet()) {
+                                                        if (dataEntry.getKey().equals("location")) {
+                                                            duplicatesCategories.add(dataEntry.getValue().toString());
+                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                                            GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
+                                                            latitude = geoPoint.getLatitude();
+                                                            longitude = geoPoint.getLongitude();
+                                                            Log.d("TAG", dataEntry.getValue().toString());
+                                                        }
+                                                        if (dataEntry.getKey().equals("Name")) {
+                                                            duplicatesCategories.add(dataEntry.getValue().toString());
+                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                                            shopName = dataEntry.getValue().toString();
+                                                            Log.d("TAG", dataEntry.getValue().toString());
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
+                                            Log.d("TAG", "No such document");
+                                        }
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+
+                                Set<String> set = new HashSet<>(duplicatesCategories);
+
+                                List<String> setAtoZ = new ArrayList<>();
+                                for(String p : set) {
+                                    setAtoZ.add(p);
+                                }
+                                Collections.sort(setAtoZ, new Comparator<String>() {
+                                    @Override
+                                    public int compare(String o1, String o2) {
+                                        return o1.compareTo(
+                                                o2);
+                                    }
+                                });
+
+                                categories += setAtoZ;
+
+                                LatLng position = new LatLng(latitude, longitude);
+                                Bundle args = new Bundle();
+                                args.putParcelable("longLat_dataProvider", position);
+                                Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
+                                categoryIntent.putExtras(args);
+                                categoryIntent.putExtra("name_dataProvider", shopName);
+                                startActivity(categoryIntent);
 
             }
         });
