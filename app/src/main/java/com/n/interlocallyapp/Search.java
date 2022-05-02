@@ -49,7 +49,7 @@ public class Search extends AppCompatActivity {
 
 
     private Button loadButton, searchButton;
-  
+
     private TextView textViewData, textViewCategories;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -145,6 +145,7 @@ public class Search extends AppCompatActivity {
 
                                 if (document.exists()) {
                                     Map<String, Object> shop = document.getData();
+                                    Map<String, Object> category = (Map<String, Object>) shop.get("CuisineCategory");
                                     for (Map.Entry<String, Object> entry : shop.entrySet()) {
                                         if (entry.getKey().equals("ShopCuisineProfile")) {
                                             Map<String, Object> profileMap = (Map<String, Object>) entry.getValue();
@@ -154,8 +155,7 @@ public class Search extends AppCompatActivity {
                                                     GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
                                                     latitude = geoPoint.getLatitude();
                                                     longitude = geoPoint.getLongitude();
-
-//                                                    locationPerCategory = (Map<String, Object>) dataEntry.getValue();
+                                                    locationPerCategory = (Map<String, Object>) dataEntry.getValue();
                                                     position = new LatLng(latitude, longitude);
                                                     args.putParcelable("longLat_dataProvider",  position);
                                                     categoryIntent.putExtras(args);
