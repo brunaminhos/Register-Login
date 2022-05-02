@@ -55,8 +55,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                Intent feedbackIntent = new Intent(MapsActivity.this, FeedbackSearch.class);
-                startActivity(feedbackIntent);
+
+                Bundle args = new Bundle();
+                args.putParcelable("longLat_dataProvider", location);
+                Intent categoryIntent = new Intent(MapsActivity.this, FeedbackSearch.class);
+                categoryIntent.putExtras(args);
+                categoryIntent.putExtra("name_dataProvider", shopName);
+                startActivity(categoryIntent);
                 return true;
             }
 
