@@ -86,13 +86,13 @@
         app:layout_constraintTop_toTopOf="@id/category_Text"
         app:layout_constraintBottom_toBottomOf="@id/guideline">
 
-<!--        <Spinner-->
-<!--            android:id="@+id/auto_complete_product_txt"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:inputType="none"-->
-<!--            android:hint="Choose Cuisine Category"/>-->
+        <!--        <Spinner-->
+        <!--            android:id="@+id/auto_complete_product_txt"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:inputType="none"-->
+        <!--            android:hint="Choose Cuisine Category"/>-->
 
         <!-- Inside text input layout add
               an auto complete text view
@@ -107,26 +107,26 @@
             />
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <TableRow-->
-<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-<!--        android:id="@+id/tableRow"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"-->
-<!--        app:layout_constraintRight_toRightOf="@id/guidelineRight"-->
-<!--        app:layout_constraintTop_toTopOf="@id/category_Text"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/guideline">-->
+    <!--    <TableRow-->
+    <!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+    <!--        android:id="@+id/tableRow"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"-->
+    <!--        app:layout_constraintRight_toRightOf="@id/guidelineRight"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/category_Text"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/guideline">-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/spinnerText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="TEST"/>-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/spinnerText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="TEST"/>-->
 
-<!--        <Spinner android:layout_height="wrap_content"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:id="@+id/spinner"/>-->
-<!--    </TableRow>-->
+    <!--        <Spinner android:layout_height="wrap_content"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:id="@+id/spinner"/>-->
+    <!--    </TableRow>-->
 
     <Button
         android:id="@+id/loadBtn"
