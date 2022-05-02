@@ -86,14 +86,6 @@
         app:layout_constraintTop_toTopOf="@id/category_Text"
         app:layout_constraintBottom_toBottomOf="@id/guideline">
 
-        <!--        <Spinner-->
-        <!--            android:id="@+id/auto_complete_product_txt"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:inputType="none"-->
-        <!--            android:hint="Choose Cuisine Category"/>-->
-
         <!-- Inside text input layout add
               an auto complete text view
                 and make its input type to none-->
@@ -138,7 +130,7 @@
         app:layout_constraintTop_toBottomOf="@+id/product_Text"/>
 
     <Button
-        android:id="@+id/SearchBtn"
+        android:id="@+id/searchBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search"

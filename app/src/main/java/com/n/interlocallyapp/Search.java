@@ -35,7 +35,6 @@ public class Search extends AppCompatActivity {
 
     private String data = "";
     private String categories = "";
-    private String selectedCategory;
     private AutoCompleteTextView autoCompleteCategoryTxt, autoCompleteProductsTxt;
     private ArrayAdapter<String> adapterCategories;
     private ArrayAdapter<String> adapterProducts;
@@ -44,7 +43,7 @@ public class Search extends AppCompatActivity {
     private List<String> duplicatesCategories = new ArrayList<>();
     private List<String> duplicatesProducts= new ArrayList<>();
 
-    private Button loadButton;
+    private Button loadButton, searchButton;
     private TextView textViewData, textViewCategories;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -58,6 +57,7 @@ public class Search extends AppCompatActivity {
         categoryFinder();
 
         loadButton = findViewById(R.id.loadBtn);
+        searchButton = findViewById(R.id.searchBtn);
         textViewData = findViewById(R.id.textViewData);
         textViewCategories = findViewById(R.id.textViewCategories);
         autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
@@ -74,19 +74,19 @@ public class Search extends AppCompatActivity {
         autoCompleteCategoryTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
+                String selectedCategory = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
 
                 productsFinder(selectedCategory);
-            }
-        });
+                autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String selectedProduct = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
-        autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String item = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), "Item: " + item, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -97,9 +97,17 @@ public class Search extends AppCompatActivity {
                 textViewData.setText(data);
             }
         });
+        
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Search.this, "Add Map", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void productsFinder(String category) {
+    private void productsFinder(String selectedCategory) {
+        duplicatesProducts.clear();
         shopReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -108,22 +116,30 @@ public class Search extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
-                                    List<String> transList = new ArrayList<>();
                                     Map<String, Object> data = document.getData();
                                     Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
-                                    for (Map.Entry<String, Object> entry : product.entrySet()) {
-                                        Map<String, Object> productData = (Map<String, Object>) entry.getValue();
-                                        for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
-                                            if (dataEntry.getKey().equals("Name")) {
-                                                duplicatesProducts.add(dataEntry.getValue().toString());
-//                                                Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                                Log.d("TAG", dataEntry.getValue().toString());
+                                    Map<String, Object> category = (Map<String, Object>) data.get("CuisineCategory");
+                                    for (Map.Entry<String, Object> entry : category.entrySet()) {
+                                        for (Map.Entry<String, Object> entry2 : product.entrySet()) {
+                                            Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
+                                            for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
+                                                if (dataEntry.getKey().equals("Name") && entry.getValue().equals(selectedCategory)) {
+                                                    duplicatesProducts.add(dataEntry.getValue().toString());
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
                                             }
                                         }
                                     }
+                                } else {
+                                    Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
+                                    Log.d("TAG", "No such document");
                                 }
                             }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
+                        data = "";
+                        setProducts.clear();
                         Set<String> set = new HashSet<>(duplicatesProducts);
                         for (String p : set) {
                             setProducts.add(p);
@@ -135,12 +151,14 @@ public class Search extends AppCompatActivity {
                                         o2);
                             }
                         });
-                        data += setProducts;
+                        data += duplicatesProducts;
                     }
                 });
     }
 
     private void categoryFinder() {
+        duplicatesCategories.clear();
+        categories = "";
         shopReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -156,7 +174,7 @@ public class Search extends AppCompatActivity {
                                             for (Map.Entry<String, Object> dataEntry : categoryName.entrySet()) {
                                                 if (dataEntry.getKey().equals("Name")) {
                                                     duplicatesCategories.add(dataEntry.getValue().toString());
-                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                    Log.d("TAGS", dataEntry.getValue().toString());
                                                 }
                                             }
                                         }
@@ -180,7 +198,7 @@ public class Search extends AppCompatActivity {
                                         o2);
                             }
                         });
-                        categories += setCategories;
+//                        categories += duplicatesCategories;
                     }
                 });
     }
