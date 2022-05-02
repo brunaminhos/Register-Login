@@ -109,6 +109,7 @@ public class Search extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                if()
                 getMap();
             }
         });
@@ -123,6 +124,10 @@ public class Search extends AppCompatActivity {
                         double latitude = 0;
                         double longitude = 0;
                         String shopName = "";
+                        Map<String, Object> locationPerCategory; // trabalhar nisso
+                        LatLng position;
+                        Bundle args = new Bundle();
+                        Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
 
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
@@ -145,13 +150,19 @@ public class Search extends AppCompatActivity {
                                     for (Map.Entry<String, Object> entry : shop.entrySet()) {
                                         if (entry.getKey().equals("ShopCuisineProfile")) {
                                             Map<String, Object> profileMap = (Map<String, Object>) entry.getValue();
-                                            Map<String, Object> locationPerCategory; // trabalhar nisso
                                             for (Map.Entry<String, Object> dataEntry : profileMap.entrySet()) {
                                                 if (dataEntry.getKey().equals("location")) {
-//                                                            Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
+//                                                    Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
                                                     GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
                                                     latitude = geoPoint.getLatitude();
                                                     longitude = geoPoint.getLongitude();
+
+//                                                    locationPerCategory = (Map<String, Object>) dataEntry.getValue();
+                                                    position = new LatLng(latitude, longitude);
+                                                    args.putParcelable("longLat_dataProvider",  position);
+                                                    categoryIntent.putExtras(args);
+                                                    categoryIntent.putExtra("name_dataProvider", shopName);
+
                                                     Log.d("TAG", dataEntry.getValue().toString());
                                                 }
                                                 if (dataEntry.getKey().equals("Name")) {
@@ -170,25 +181,6 @@ public class Search extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-                        setProducts.clear();
-                        Set<String> set = new HashSet<>(duplicatesProducts);
-                        for (String p : set) {
-                            setProducts.add(p);
-                        }
-                        Collections.sort(setProducts, new Comparator<String>() {
-                            @Override
-                            public int compare(String o1, String o2) {
-                                return o1.compareTo(
-                                        o2);
-                            }
-                        });
-
-                        LatLng position = new LatLng(latitude, longitude);
-                        Bundle args = new Bundle();
-                        args.putParcelable("longLat_dataProvider", position);
-                        Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
-                        categoryIntent.putExtras(args);
-                        categoryIntent.putExtra("name_dataProvider", shopName);
                         startActivity(categoryIntent);
                     }
                 });
