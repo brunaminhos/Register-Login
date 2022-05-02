@@ -66,8 +66,6 @@ public class Search extends AppCompatActivity {
 
         searchButton = findViewById(R.id.searchBtn);
 
-        searchButton = findViewById(R.id.SearchBtn);
-
         textViewData = findViewById(R.id.textViewData);
         textViewCategories = findViewById(R.id.textViewCategories);
         autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
