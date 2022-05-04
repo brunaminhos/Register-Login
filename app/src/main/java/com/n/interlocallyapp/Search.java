@@ -36,17 +36,17 @@ import java.util.Set;
 
 public class Search extends AppCompatActivity {
 
+    private String selectedCategory, selectedProduct, productName, productDescription, productPrice, discountInfo, availability, productPicture;
     private String data = "";
     private String categories = "";
-    private String selectedCategory;
     private AutoCompleteTextView autoCompleteCategoryTxt, autoCompleteProductsTxt;
     private ArrayAdapter<String> adapterCategories;
     private ArrayAdapter<String> adapterProducts;
     private List<String> setCategories = new ArrayList<>();
-    private List<String> setProducts = new ArrayList<>();
-    private List<String> duplicatesCategories = new ArrayList<>();
-    private List<String> duplicatesProducts= new ArrayList<>();
-
+    private final List<String> setProducts = new ArrayList<>();
+    private final List<String> duplicatesCategories = new ArrayList<>();
+    private final List<String> duplicatesProducts= new ArrayList<>();
+    private Bundle args = new Bundle();
 
     private Button loadButton, searchButton;
 
@@ -55,10 +55,18 @@ public class Search extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference shopReference = db.collection("Shop");
 
+
+    //creating and initializing an Intent object
+    private Intent testIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+
+        testIntent = new Intent(this, TestActivity.class);
+        args = new Bundle();
 
         categoryFinder();
 
@@ -84,12 +92,15 @@ public class Search extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
 
                 productsFinder(selectedCategory);
+                args.putString("CATEGORY", selectedCategory);
 
                 autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        String selectedProduct = parent.getItemAtPosition(position).toString();
+                        selectedProduct = parent.getItemAtPosition(position).toString();
 //                        Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
+
+                        args.putString("PRODUCT", selectedProduct);
                     }
                 });
             }
@@ -98,16 +109,20 @@ public class Search extends AppCompatActivity {
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textViewCategories.setText(categories);
-                textViewData.setText(data);
+//                textViewCategories.setText(categories);
+//                textViewData.setText(data);
+
+                //attach the bundle to the Intent object
+                testIntent.putExtras(args);
+
+                //finally start the activity
+                startActivity(testIntent);
             }
         });
-
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if()
                 getMap();
             }
         });
@@ -121,28 +136,11 @@ public class Search extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         double latitude = 0;
                         double longitude = 0;
-                        String shopName = "";
-                        Map<String, Object> locationPerCategory; // trabalhar nisso
                         LatLng position;
-                        Bundle args = new Bundle();
                         Intent categoryIntent = new Intent(Search.this, MapsActivity.class);
 
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-
-//                                        if (document.exists()) {
-//                                            Map<String, Object> data = document.getData();
-//                                            Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
-//                                            Map<String, Object> category = (Map<String, Object>) data.get("CuisineCategory");
-//                                            for (Map.Entry<String, Object> entry : category.entrySet()) {
-//                                                for (Map.Entry<String, Object> entry2 : product.entrySet()) {
-//                                                    Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
-//                                                    for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
-//                                                        if (dataEntry.getKey().equals("Name") && entry.getValue().equals(selectedCategory)) {
-//                                                            duplicatesProducts.add(dataEntry.getValue().toString());
-//                                                            Log.d("TAG", dataEntry.getValue().toString());
-//                                                        }
-
                                 if (document.exists()) {
                                     Map<String, Object> shop = document.getData();
                                     Map<String, Object> category = (Map<String, Object>) shop.get("CuisineCategory");
@@ -155,17 +153,26 @@ public class Search extends AppCompatActivity {
                                                     GeoPoint geoPoint = (GeoPoint) dataEntry.getValue();
                                                     latitude = geoPoint.getLatitude();
                                                     longitude = geoPoint.getLongitude();
-                                                    locationPerCategory = (Map<String, Object>) dataEntry.getValue();
+
                                                     position = new LatLng(latitude, longitude);
                                                     args.putParcelable("longLat_dataProvider",  position);
-                                                    categoryIntent.putExtras(args);
-                                                    categoryIntent.putExtra("name_dataProvider", shopName);
-
                                                     Log.d("TAG", dataEntry.getValue().toString());
                                                 }
                                                 if (dataEntry.getKey().equals("Name")) {
                                                     Toast.makeText(Search.this, dataEntry.getValue().toString(), Toast.LENGTH_SHORT).show();
-                                                    shopName = dataEntry.getValue().toString();
+                                                    args.putString("shopName_dataProvider",dataEntry.getValue().toString());
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                                if (dataEntry.getKey().equals("address")) {
+                                                    args.putString("address_dataProvider",dataEntry.getValue().toString());
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                                if (dataEntry.getKey().equals("contactNumber")) {
+                                                    args.putString("contactNumber_dataProvider",dataEntry.getValue().toString());
+                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                }
+                                                if (dataEntry.getKey().equals("picture")) {
+                                                    args.putString("shopPicture_dataProvider",dataEntry.getValue().toString());
                                                     Log.d("TAG", dataEntry.getValue().toString());
                                                 }
                                             }
@@ -179,6 +186,7 @@ public class Search extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
+                        categoryIntent.putExtras(args);
                         startActivity(categoryIntent);
                     }
                 });
