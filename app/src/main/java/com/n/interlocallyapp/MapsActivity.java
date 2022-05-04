@@ -22,10 +22,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     private TextView textViewData;
+    private Intent productInfoIntent;
+    private Bundle args;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        productInfoIntent = getIntent();
+        args = productInfoIntent.getExtras();
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -38,8 +43,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Intent i = getIntent();
-        LatLng ll = i.getParcelableExtra("longLat_dataProvider");
+
+        LatLng ll = productInfoIntent.getParcelableExtra("longLat_dataProvider");
         Log.d("Location", "location: " + ll.latitude + " " + ll.longitude);
 
         LatLng location = new LatLng(ll.latitude, ll.longitude);
@@ -47,21 +52,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
 
-        String shopName = i.getExtras().getString("name_dataProvider");
+        String shopName = productInfoIntent.getExtras().getString("name_dataProvider");
         textViewData = findViewById(R.id.textViewData);
         textViewData.setText(shopName);
+
+        Log.d("TAG_MAP", "OUTSIDE MARKER");
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
         {
             @Override
             public boolean onMarkerClick(Marker arg0) {
 
-                Bundle args = new Bundle();
                 args.putParcelable("longLat_dataProvider", location);
-                Intent categoryIntent = new Intent(MapsActivity.this, FeedbackSearch.class);
-                categoryIntent.putExtras(args);
-                categoryIntent.putExtra("name_dataProvider", shopName);
-                startActivity(categoryIntent);
+                args.putString("name_dataProvider", shopName);
+
+                productInfoIntent = new Intent(MapsActivity.this, ProductInfo.class);
+                productInfoIntent.putExtras(args);
+                startActivity(productInfoIntent);
+                Log.d("TAG_MAP", "INSIDE MARKER");
                 return true;
             }
 

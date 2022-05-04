@@ -49,6 +49,14 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="709dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
+        app:layout_constraintBottom_toBottomOf="@+id/guidelineBottom"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        android:text="TESTTTTTTTTTTTTTTTTT"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
