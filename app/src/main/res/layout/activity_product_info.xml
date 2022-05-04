@@ -61,6 +61,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="100dp"
+        android:src="@drawable/brazil"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
