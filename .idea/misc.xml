@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Rodrigo Amaro/StudioProjects/InterLocally/app/src/main/res/layout/activity_custom_list_view.xml" value="0.18070652173913043" />
+        <entry key="..\:/Users/Rodrigo Amaro/StudioProjects/InterLocally/app/src/main/res/layout/activity_main.xml" value="0.18070652173913043" />
+        <entry key="..\:/Users/Rodrigo Amaro/StudioProjects/InterLocally/app/src/main/res/layout/activity_product_list.xml" value="0.18070652173913043" />
+        <entry key="..\:/Users/Rodrigo Amaro/StudioProjects/InterLocally/app/src/main/res/layout/activity_register.xml" value="0.22447916666666667" />
+        <entry key="..\:/Users/Rodrigo Amaro/StudioProjects/InterLocally/app/src/main/res/layout/activity_search.xml" value="0.39344262295081966" />
+        <entry key="..\:/Users/Rodrigo Amaro/StudioProjects/InterLocally/app/src/main/res/layout/dropdown_item.xml" value="0.22447916666666667" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.341" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.341" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/layout/activity_feedback_search.xml" value="0.43645833333333334" />

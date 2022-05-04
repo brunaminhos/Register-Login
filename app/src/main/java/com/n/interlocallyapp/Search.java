@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -20,15 +21,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +42,7 @@ public class Search extends AppCompatActivity {
 
     private String data = "";
     private String categories = "";
-    private String selectedCategory;
+    private String selectedCategory = "brazilian";
     private AutoCompleteTextView autoCompleteCategoryTxt, autoCompleteProductsTxt;
     private ArrayAdapter<String> adapterCategories;
     private ArrayAdapter<String> adapterProducts;
@@ -47,8 +51,7 @@ public class Search extends AppCompatActivity {
     private List<String> duplicatesCategories = new ArrayList<>();
     private List<String> duplicatesProducts= new ArrayList<>();
 
-
-    private Button loadButton, searchButton;
+    private Button loadButton, searchButton, listButton;
   
     private TextView textViewData, textViewCategories;
 
@@ -60,11 +63,15 @@ public class Search extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        categoryFinder();
+        //categoryFinder();
+
+        categoriesSetter();
 
         loadButton = findViewById(R.id.loadBtn);
 
         searchButton = findViewById(R.id.searchBtn);
+
+        listButton = findViewById(R.id.listBtn);
 
         textViewData = findViewById(R.id.textViewData);
         textViewCategories = findViewById(R.id.textViewCategories);
@@ -80,11 +87,11 @@ public class Search extends AppCompatActivity {
         autoCompleteCategoryTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedCategory = parent.getItemAtPosition(position).toString();
-//                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
-
+                selectedCategory = parent.getItemAtPosition(position).toString().toLowerCase();
+                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
+/*
                 productsFinder(selectedCategory);
-
+*/
                 autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -103,6 +110,46 @@ public class Search extends AppCompatActivity {
             }
         });
 
+        listButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                CollectionReference cuisineCategoryDb = db.collection("ShopCuisineProduct");
+
+                DocumentReference categoryDoc = cuisineCategoryDb.document(selectedCategory);
+
+                categoryDoc.collection("products")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+
+                                    HashMap<String, Object> product = new HashMap<>();
+
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                        product.put(document.getId(),document.getData());
+                                    }
+
+                                    Intent listIntent = new Intent(Search.this, ProductList.class);
+
+                                    listIntent.putExtra("cuisineId",selectedCategory);
+
+                                    listIntent.putExtra("productMap",product);
+
+                                    startActivity(listIntent);
+
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+            }
+        });
+
+
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +159,31 @@ public class Search extends AppCompatActivity {
             }
         });
     }
+
+    private void categoriesSetter(){
+
+        CollectionReference cuisineCategoryDb = db.collection("ShopCuisineProduct");
+
+        cuisineCategoryDb.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<String> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        //list.add(document.getId());
+                        System.out.println(document.getId() + "  " + document.getData().get("name"));
+                        setCategories.add((String) document.getData().get("name"));
+                    }
+                   // Log.d(TAG, list.toString());
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+    }
+
+
 
     private void getMap() {
         shopReference
@@ -201,10 +273,25 @@ public class Search extends AppCompatActivity {
                                         for (Map.Entry<String, Object> entry2 : product.entrySet()) {
                                             Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
                                             for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
+
+                                                /*
+                                                String mapProductName = "";
+                                                String mapProductDescription = "";
+*/
                                                 if (dataEntry.getKey().equals("Name") && entry.getValue().equals(selectedCategory)) {
                                                     duplicatesProducts.add(dataEntry.getValue().toString());
-                                                    Log.d("TAG", dataEntry.getValue().toString());
+                                                  //  Log.d("TAG", dataEntry.getValue().toString());
+
                                                 }
+/*
+                                                ShopCuisineProduct mapProduct = new ShopCuisineProduct(mapProductName,mapProductDescription,R.drawable.brazilian);
+
+                                                listProducts.add(mapProduct);
+
+                                                System.out.println(mapProduct.name + " - " + mapProduct.description);
+
+                                                System.out.println(dataEntry.getValue());
+*/
                                             }
                                         }
                                     }
@@ -233,6 +320,8 @@ public class Search extends AppCompatActivity {
                     }
                 });
     }
+
+
 
     private void categoryFinder() {
         duplicatesCategories.clear();

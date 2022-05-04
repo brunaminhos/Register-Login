@@ -7,6 +7,17 @@
     android:background="@drawable/background2"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/listBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Product List"
+        app:layout_constraintEnd_toEndOf="@id/guidelineVertical"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/product_Text" />
+
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,6 +82,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:inputType="none"
+            android:text="Brazilian"
             android:hint="Choose Cuisine Category"
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -133,9 +145,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Load"
-        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
         app:layout_constraintEnd_toEndOf="@id/guidelineVertical"
-        app:layout_constraintTop_toBottomOf="@+id/product_Text"/>
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@+id/product_Text" />
 
     <Button
         android:id="@+id/searchBtn"
