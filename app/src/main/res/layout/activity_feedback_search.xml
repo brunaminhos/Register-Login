@@ -53,7 +53,7 @@
         android:id="@+id/feedbackText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="176dp"
         android:text="Leave your Rating and Feedback!"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
@@ -61,16 +61,40 @@
         app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:id="@+id/shops_dropdown"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
+        app:layout_constraintRight_toRightOf="@id/guidelineRight"
+        app:layout_constraintTop_toTopOf="@id/feedbackText"
+        app:layout_constraintBottom_toBottomOf="@id/tvFeedback">
+
+        <AutoCompleteTextView
+            android:id="@+id/auto_complete_shops_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="none"
+            android:hint="Choose Cuisine Product"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/tvFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:text="Very Dissatisfied"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/feedbackText"/>
+        app:layout_constraintTop_toBottomOf="@+id/feedbackText" />
 
     <RatingBar
         android:id="@+id/ratingBar2"
@@ -85,34 +109,37 @@
         android:progressTint="#FF9800"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintHorizontal_bias="0.595"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/tvFeedback" />
+        app:layout_constraintTop_toBottomOf="@+id/tvFeedback"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/feedbackRating"
-        android:layout_width="367dp"
-        android:layout_height="142dp"
+        android:layout_width="342dp"
+        android:layout_height="123dp"
+        android:layout_marginTop="32dp"
         android:background="#EFEFEF"
-        android:hint="Write your feedback here"
-        android:gravity="start|top"
         android:ems="0"
+        android:gravity="start|top"
+        android:hint="Write your feedback here"
         android:lines="4"
         android:padding="5dp"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintHorizontal_bias="0.657"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar2"/>
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar2" />
 
     <Button
         android:id="@+id/feedbackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="115dp"
+        android:layout_marginTop="204dp"
         android:text="Send"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"/>
-
-
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
