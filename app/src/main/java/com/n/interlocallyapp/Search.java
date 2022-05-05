@@ -126,25 +126,19 @@ public class Search extends AppCompatActivity {
                 if(selectedCategory == null || selectedProduct == null){
                     textViewData.setText("Please choose category and product before proceeding.");
                 }else {
-                    categoryIntent = new Intent(Search.this, MapsActivity.class);
                     getMap(selectedCategory);
-                    categoryIntent.putExtras(args);
-                    startActivity(categoryIntent);
                 }
             }
         });
     }
 
     private void getMap(String selectedCategory) {
-        duplicatesProfiles.clear();
         shopReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        double latitude = 0;
-//                        double longitude = 0;
-//                        LatLng position;
+                        categoryIntent = new Intent(Search.this, MapsActivity.class);
 
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
@@ -175,19 +169,18 @@ public class Search extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-                        setProfiles.clear();
                         Set<Map<String,Object>> set = new HashSet<Map<String,Object>>(duplicatesProfiles);
                         for (Map p : set) {
                             setProfiles.add(p);
                         }
 
-//                        Log.d("TAG_1", setProfiles.toString());
-//                        Toast.makeText(Search.this, setProfiles.toString(), Toast.LENGTH_SHORT).show();
-
                         args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) setProductsProfiles);
                         args.putSerializable("categories_dataProvider", (ArrayList<Map<String, Object>>) setCategoriesProfiles);
                         args.putSerializable("profiles_dataProvider", (ArrayList<Map<String, Object>>) setProfiles);
-                    }
+                        Log.d("TAG_1", setProfiles.toString());
+                        Log.d("TAG_1", args.toString());
+                        categoryIntent.putExtras(args);
+                        startActivity(categoryIntent);                    }
                 });
     }
 
@@ -224,7 +217,7 @@ public class Search extends AppCompatActivity {
                                         }
                                     }
                                 } else {
-                                    Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(Search.this, "No such document", Toast.LENGTH_SHORT).show();
                                     Log.d("TAG", "No such document");
                                 }
                             }
