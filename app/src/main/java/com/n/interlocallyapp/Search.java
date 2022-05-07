@@ -103,6 +103,20 @@ public class Search extends AppCompatActivity {
                         selectedProduct = parent.getItemAtPosition(position).toString();
 //                        Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
 
+                        duplicatesProductsProfiles.clear();
+                        for (Map<String,Object> map : setProductsProfiles) {
+                            // we iterate over all values of the current map
+                            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                                Map<String, Object> productData = (Map<String, Object>) entry.getValue();
+                                if (productData.get("Name").equals(selectedProduct)) {
+                                    Map<String, Object> productsMap = (Map<String, Object>) entry.getValue();
+                                    duplicatesProductsProfiles.add(productsMap);
+                                }
+                            }
+                        }
+
+                        args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) duplicatesProductsProfiles);
+                        Log.d("TAG_1", duplicatesProductsProfiles.toString());
                         args.putString("selectedProduct_dataProvider", selectedProduct);
                     }
                 });
@@ -143,6 +157,7 @@ public class Search extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
+                                    String ID = document.getId();
                                     Map<String, Object> shop = document.getData();
                                     Map<String, Object> product = (Map<String, Object>) shop.get("ShopCuisineProduct");
                                     Map<String, Object> category = (Map<String, Object>) shop.get("CuisineCategory");
@@ -154,6 +169,8 @@ public class Search extends AppCompatActivity {
                                                     for (Map.Entry<String, Object> entry3 : shop.entrySet()) {
                                                         if (entry3.getKey().equals("ShopCuisineProfile")) {
                                                             Map<String, Object> profileMap = (Map<String, Object>) entry3.getValue();
+                                                            profileMap.put("ID", ID);
+                                                            Log.d("TAGSS", productData.toString());
                                                             duplicatesProfiles.add(profileMap);
                                                         }
                                                     }
@@ -174,13 +191,14 @@ public class Search extends AppCompatActivity {
                             setProfiles.add(p);
                         }
 
-                        args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) setProductsProfiles);
-                        args.putSerializable("categories_dataProvider", (ArrayList<Map<String, Object>>) setCategoriesProfiles);
+//                        args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) setProductsProfiles);
+//                        args.putSerializable("categories_dataProvider", (ArrayList<Map<String, Object>>) setCategoriesProfiles);
                         args.putSerializable("profiles_dataProvider", (ArrayList<Map<String, Object>>) setProfiles);
                         Log.d("TAG_1", setProfiles.toString());
                         Log.d("TAG_1", args.toString());
                         categoryIntent.putExtras(args);
-                        startActivity(categoryIntent);                    }
+                        startActivity(categoryIntent);
+                    }
                 });
     }
 
@@ -194,12 +212,14 @@ public class Search extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
+                                    String ID = document.getId();
                                     Map<String, Object> data = document.getData();
                                     Map<String, Object> product = (Map<String, Object>) data.get("ShopCuisineProduct");
                                     Map<String, Object> category = (Map<String, Object>) data.get("CuisineCategory");
                                     for (Map.Entry<String, Object> entry : category.entrySet()) {
                                         for (Map.Entry<String, Object> entry2 : product.entrySet()) {
                                             Map<String, Object> productData = (Map<String, Object>) entry2.getValue();
+                                            productData.put("ID", ID);
                                             if(productData.get("Availability").equals(true)) {
                                                 for (Map.Entry<String, Object> dataEntry : productData.entrySet()) {
                                                     if (dataEntry.getKey().equals("Name") && entry.getValue().equals(selectedCategory)) {
