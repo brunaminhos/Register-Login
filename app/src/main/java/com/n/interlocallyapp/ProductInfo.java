@@ -85,7 +85,6 @@ public class ProductInfo extends AppCompatActivity {
                 }
             }
         }
-
 //        Picasso.get().load(productPicture).into(productImage);
         Picasso.get().load(args.getString("shopPicture_dataProvider")).into(shopImage);
         shopName.setText(args.getString("ShopName_dataProvider"));
