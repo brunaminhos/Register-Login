@@ -12,10 +12,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -110,21 +112,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationUser = new LatLng(latitudeUser,longitudeUser);
         Log.d("TAG_MAP", "locationUser: " + latitudeUser + ", " + longitudeUser);
 
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+        MarkerOptions userLocation = new MarkerOptions().position(locationUser).title("You are here.");
+        userLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        mMap.addMarker(userLocation);
+
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locationUser));
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
             @Override
             public boolean onMarkerClick(Marker arg0) {
-                args.putString("name_dataProvider", shopName);
-
-                productInfoIntent = new Intent(MapsActivity.this, ProductInfo.class);
-                productInfoIntent.putExtras(args);
-                startActivity(productInfoIntent);
-                Log.d("TAG_MAP", "INSIDE MARKER");
+                if(arg0.getTitle().equals("You are here.")){
+                    return false;
+                }else if (arg0.getTitle().equals(shopName)) {
+                    args.putString("name_dataProvider", shopName);
+                    productInfoIntent = new Intent(MapsActivity.this, ProductInfo.class);
+                    productInfoIntent.putExtras(args);
+                    startActivity(productInfoIntent);
+                    Log.d("TAG_MAP", "INSIDE MARKER");
+                    return true;
+                }
                 return true;
             }
-
         });
     }
 }
