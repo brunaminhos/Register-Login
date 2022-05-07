@@ -57,7 +57,6 @@
         <activity
             android:name=".MapsActivity"
             android:exported="false" />
->>>>>>> 2a78482607755e52dc9e1529a864d5257e22df52
     </application>
 
 </manifest>
