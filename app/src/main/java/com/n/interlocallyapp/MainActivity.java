@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         feedbackClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent feedbackIntent = new Intent(MainActivity.this, DialogFlow.class);
+                Intent feedbackIntent = new Intent(MainActivity.this, FeedbackSearch.class);
                 startActivity(feedbackIntent);
             }
         });
