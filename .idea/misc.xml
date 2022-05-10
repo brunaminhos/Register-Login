@@ -5,6 +5,9 @@
       <map>
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.341" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/back.xml" value="0.34" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/bg_chat_receive.xml" value="0.136" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/bg_chat_send.xml" value="0.136" />
+        <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/border_outline.xml" value="0.136" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/box.xml" value="0.34" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/compose_icon.xml" value="0.34" />
         <entry key="..\:/Users/bruna/OneDrive/2021/App/InterlocallyApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.341" />
