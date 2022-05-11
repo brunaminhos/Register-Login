@@ -52,42 +52,42 @@
     <!--Create a TextInputLayout and choose the style,
     for now we are choosing the OutlinedBox ExposedDropdownMenu   -->
 
-    <TextView
-        android:id="@+id/txtSpeechInput"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="55dp"
-        app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
-        app:layout_constraintRight_toRightOf="@id/guidelineRight"
-        app:layout_constraintBottom_toTopOf="@+id/category_Text"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
-        android:textSize="26dp"
-        android:textStyle="normal" /> />
+<!--    <TextView-->
+<!--        android:id="@+id/txtSpeechInput"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginTop="100dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:layout_marginRight="55dp"-->
+<!--        app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"-->
+<!--        app:layout_constraintRight_toRightOf="@id/guidelineRight"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/category_Text"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="26dp"-->
+<!--        android:textStyle="normal" />-->
 
-    <LinearLayout
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintRight_toRightOf="@id/guidelineRight"
-        app:layout_constraintBottom_toTopOf="@+id/category_Text"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:orientation="vertical">
+<!--    <LinearLayout-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginTop="100dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        app:layout_constraintRight_toRightOf="@id/guidelineRight"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/category_Text"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:gravity="center"-->
+<!--        android:orientation="vertical">-->
 
-        <ImageButton
-            android:id="@+id/btnSpeak"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:src="@drawable/voice" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/btnSpeak"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@null"-->
+<!--            android:src="@drawable/voice" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"

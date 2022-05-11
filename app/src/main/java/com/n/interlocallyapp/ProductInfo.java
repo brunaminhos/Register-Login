@@ -80,7 +80,7 @@ public class ProductInfo extends AppCompatActivity {
                         Picasso.get().load(entry.getValue().toString()).into(productImage);
 //                        productPicture = entry.getValue().toString();
                     }else if(entry.getKey().equals("Price")){
-                        priceView.setText(entry.getValue().toString());
+                        priceView.setText("€" + entry.getValue().toString());
                     }
                 }
             }

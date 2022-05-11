@@ -63,6 +63,9 @@ public class Search extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference shopReference = db.collection("Shop");
+    private CollectionReference BrazilianFeedbacks = db.collection("LinkBrazil");
+    private CollectionReference IndianFeedbacks = db.collection("IndianShop");
+    private CollectionReference ChineseFeedbacks = db.collection("ChineseShop");
 
     //creating and initializing an Intent object
     private Intent testIntent;
@@ -77,8 +80,8 @@ public class Search extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
-        btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
+//        txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
+//        btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
 
 
         testIntent = new Intent(this, TestActivity.class);
@@ -154,14 +157,6 @@ public class Search extends AppCompatActivity {
                 }else {
                     getMap(selectedCategory);
                 }
-            }
-        });
-
-        btnSpeak.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                promptSpeechInput();
             }
         });
     }
