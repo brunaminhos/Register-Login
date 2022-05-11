@@ -9,56 +9,58 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="horizontal"/>
 
     <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/guidelineVertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.5"
+        android:orientation="vertical"/>
 
     <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/guidelineLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.1"
+        android:orientation="vertical"/>
 
     <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/guidelineRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.9"
+        android:orientation="vertical"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.03" />
+        android:id="@+id/guidelineTop"
+        app:layout_constraintGuide_percent="0.03"
+        android:orientation="horizontal"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="365dp" />
+        app:layout_constraintGuide_begin="709dp" />
 
     <TextView
         android:id="@+id/feedbackText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="176dp"
         android:text="Leave your Rating and Feedback!"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@id/shops_dropdown"
+        app:layout_constraintTop_toTopOf="@id/guidelineTop"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -66,12 +68,10 @@
         android:id="@+id/shops_dropdown"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="100dp"
         app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
         app:layout_constraintRight_toRightOf="@id/guidelineRight"
         app:layout_constraintTop_toTopOf="@id/feedbackText"
-        app:layout_constraintBottom_toBottomOf="@id/tvFeedback">
+        app:layout_constraintBottom_toTopOf="@id/guideline">
 
         <AutoCompleteTextView
             android:id="@+id/auto_complete_shops_dropdown"
@@ -79,7 +79,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:inputType="none"
-            android:hint="Choose Cuisine Product"
+            android:hint="Choose Cuisine Shop"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -88,13 +88,12 @@
         android:id="@+id/tvFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:text="Very Dissatisfied"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/feedbackText" />
+        app:layout_constraintTop_toBottomOf="@+id/shops_dropdown"
+        app:layout_constraintBottom_toBottomOf="@id/ratingBar2"/>
 
     <RatingBar
         android:id="@+id/ratingBar2"
@@ -107,39 +106,38 @@
         android:numStars="5"
         android:progressBackgroundTint="#434040"
         android:progressTint="#FF9800"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="@id/feedbackBtn"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintHorizontal_bias="0.595"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/tvFeedback"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline"/>
 
-    <EditText
-        android:id="@+id/feedbackRating"
-        android:layout_width="342dp"
-        android:layout_height="123dp"
-        android:layout_marginTop="32dp"
-        android:background="#EFEFEF"
-        android:ems="0"
-        android:gravity="start|top"
-        android:hint="Write your feedback here"
-        android:lines="4"
-        android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintHorizontal_bias="0.657"
-        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar2" />
+<!--    <EditText-->
+<!--        android:id="@+id/feedbackRating"-->
+<!--        android:layout_width="342dp"-->
+<!--        android:layout_height="123dp"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:background="#EFEFEF"-->
+<!--        android:ems="0"-->
+<!--        android:gravity="start|top"-->
+<!--        android:hint="Write your feedback here"-->
+<!--        android:lines="4"-->
+<!--        android:padding="5dp"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/guidelineRight"-->
+<!--        app:layout_constraintHorizontal_bias="0.657"-->
+<!--        app:layout_constraintStart_toStartOf="@id/guidelineLeft"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/ratingBar2" />-->
 
     <Button
         android:id="@+id/feedbackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="204dp"
         android:text="Send"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar2"
+        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/guideline" />
+        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

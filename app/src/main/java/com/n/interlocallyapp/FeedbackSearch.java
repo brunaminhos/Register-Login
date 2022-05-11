@@ -1,5 +1,7 @@
 package com.n.interlocallyapp;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +40,7 @@ public class FeedbackSearch extends AppCompatActivity {
     private ArrayAdapter<String> adapterShops;
     private List<String> setShops = new ArrayList<>();
     private AutoCompleteTextView autoCompleteShopsDropDown;
-    private List<String> duplicatesShops= new ArrayList<>();
+    private final List<String> duplicatesShops = new ArrayList<>();
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference shopReference = db.collection("Shop");
@@ -50,7 +53,7 @@ public class FeedbackSearch extends AppCompatActivity {
         shopsFinder();
 
         ratingBar2 = findViewById(R.id.ratingBar2);
-        feedbackRating = findViewById(R.id.feedbackRating);
+//        feedbackRating = findViewById(R.id.feedbackRating);
         feedbackBtn = findViewById(R.id.feedbackBtn);
         tvFeedback = findViewById(R.id.tvFeedback);
         autoCompleteShopsDropDown = findViewById(R.id.auto_complete_shops_dropdown);
