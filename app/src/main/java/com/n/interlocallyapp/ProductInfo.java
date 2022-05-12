@@ -50,7 +50,7 @@ public class ProductInfo extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference feedbackReference;
-    List<Integer> shopRating = new ArrayList<>();
+    List<Double> shopRating = new ArrayList<>();
 
 
     @Override
@@ -122,15 +122,15 @@ public class ProductInfo extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.d("TAG_1", document.getId() + " => " + document.get("rating"));
-                                shopRating.add((Integer.parseInt(document.get("rating").toString())));
+                                shopRating.add((Double) document.get("rating"));
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
 
                         if(shopRating.size() != 0) {
-                            int totalRatings = 0;
-                            int sum = 0;
+                            double totalRatings = 0;
+                            double sum = 0;
                             for (int i = 0; i < shopRating.size(); i++) {
                                 sum += shopRating.get(i);
                             }
@@ -139,8 +139,7 @@ public class ProductInfo extends AppCompatActivity {
                             Map<String, Object> saveRatings = new HashMap<>();
                             saveRatings.put("rating", totalRatings);
 
-                            ratingBar.setIsIndicator(false);
-                            ratingBar.setRating(totalRatings);
+                            ratingBar.setRating((float) totalRatings);
 
                             DocumentReference documentReference = db.collection("Feedback").document(shopNameString);
                             documentReference.set(saveRatings).addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -103,7 +103,7 @@
         android:foregroundGravity="center_horizontal"
         android:longClickable="false"
         android:numStars="5"
-        android:progressBackgroundTint="#7BA5B6"
+        android:progressBackgroundTint="#9237697E"
         android:progressTint="#FF9800"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"

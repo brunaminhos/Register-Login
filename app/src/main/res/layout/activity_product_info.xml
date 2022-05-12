@@ -207,7 +207,7 @@
         android:layout_marginTop="30dp"
         android:foregroundGravity="center_horizontal"
         android:numStars="5"
-        android:progressBackgroundTint="#92589EBC"
+        android:progressBackgroundTint="#9237697E"
         android:progressTint="#FF9800"
         app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
