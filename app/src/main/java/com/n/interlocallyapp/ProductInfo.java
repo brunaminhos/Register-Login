@@ -122,7 +122,7 @@ public class ProductInfo extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                                 Log.d("TAG_1", document.getId() + " => " + document.get("rating"));
-                                shopRating.add((Double) document.get("rating"));
+                                shopRating.add(Double.parseDouble(document.get("rating").toString()));
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());

@@ -104,6 +104,8 @@ public class Search extends AppCompatActivity {
                 productsFinder(selectedCategory);
                 args.putString("selectedCategory_dataProvider", selectedCategory);
 
+
+
                 autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

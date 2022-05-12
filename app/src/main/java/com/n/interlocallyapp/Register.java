@@ -219,6 +219,11 @@ public class Register extends AppCompatActivity {
                     return;
                 }
 
+                if(latitude == null || longitude == null){
+                    locationView.setText("Please select location");
+                    return;
+                }
+
                 //register the user into the firebase
                 fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -300,9 +305,9 @@ public class Register extends AppCompatActivity {
             public void onSuccess(Location location) {
                 // Got last known location. In some rare situations this can be null.
                 if (location != null) {
-                    latitude = location.getLongitude() + "";
-                    longitude = location.getLatitude() + "";
-                    locationView.setText(latitude + ", " + longitude);
+                    latitude = location.getLatitude()  + "";
+                    longitude = location.getLongitude() + "";
+//                    locationView.setText(latitude + ", " + longitude);
                 }
             }
         });
