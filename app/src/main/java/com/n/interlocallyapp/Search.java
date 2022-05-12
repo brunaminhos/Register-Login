@@ -57,22 +57,18 @@ public class Search extends AppCompatActivity {
     private final List<Map<String,Object>> duplicatesCategoriesProfiles = new ArrayList<>();
     private Bundle args = new Bundle();
 
-    private Button searchButton, loadButton;
+    private Button searchButton;
 
     private TextView textViewData;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference shopReference = db.collection("Shop");
-    private CollectionReference BrazilianFeedbacks = db.collection("LinkBrazil");
-    private CollectionReference IndianFeedbacks = db.collection("IndianShop");
-    private CollectionReference ChineseFeedbacks = db.collection("ChineseShop");
 
     //creating and initializing an Intent object
-    private Intent testIntent;
     private Intent categoryIntent;
 
-    private TextView txtSpeechInput;
-    private ImageButton btnSpeak;
+//    private TextView txtSpeechInput;
+//    private ImageButton btnSpeak;
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
     @Override
@@ -83,14 +79,10 @@ public class Search extends AppCompatActivity {
 //        txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
 //        btnSpeak = (ImageButton) findViewById(R.id.btnSpeak);
 
-
-        testIntent = new Intent(this, TestActivity.class);
-
         args = new Bundle();
 
         categoryFinder();
 
-        loadButton = findViewById(R.id.loadBtn);
         searchButton = findViewById(R.id.searchBtn);
 
         textViewData = findViewById(R.id.textViewData);
@@ -135,17 +127,6 @@ public class Search extends AppCompatActivity {
                         args.putString("selectedProduct_dataProvider", selectedProduct);
                     }
                 });
-            }
-        });
-
-        loadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //attach the bundle to the Intent object
-                testIntent.putExtras(args);
-
-                //finally start the activity
-                startActivity(testIntent);
             }
         });
 
@@ -206,8 +187,6 @@ public class Search extends AppCompatActivity {
                             setProfiles.add(p);
                         }
 
-//                        args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) setProductsProfiles);
-//                        args.putSerializable("categories_dataProvider", (ArrayList<Map<String, Object>>) setCategoriesProfiles);
                         args.putSerializable("profiles_dataProvider", (ArrayList<Map<String, Object>>) setProfiles);
                         Log.d("TAG_1", setProfiles.toString());
                         Log.d("TAG_1", args.toString());
@@ -339,42 +318,42 @@ public class Search extends AppCompatActivity {
                 });
     }
 
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
-        try {
-            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(),
-                    getString(R.string.speech_not_supported),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
+//    private void promptSpeechInput() {
+//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+//                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+//        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+//                getString(R.string.speech_prompt));
+//        try {
+//            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+//        } catch (ActivityNotFoundException a) {
+//            Toast.makeText(getApplicationContext(),
+//                    getString(R.string.speech_not_supported),
+//                    Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
-    /**
-     * Receiving speech input
-     * */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQ_CODE_SPEECH_INPUT: {
-                if (resultCode == RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    txtSpeechInput.setText(result.get(0));
-                }
-                break;
-            }
-
-        }
-    }
+//    /**
+//     * Receiving speech input
+//     * */
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        switch (requestCode) {
+//            case REQ_CODE_SPEECH_INPUT: {
+//                if (resultCode == RESULT_OK && null != data) {
+//
+//                    ArrayList<String> result = data
+//                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+//                    txtSpeechInput.setText(result.get(0));
+//                }
+//                break;
+//            }
+//
+//        }
+//    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {

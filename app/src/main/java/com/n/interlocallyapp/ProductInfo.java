@@ -1,21 +1,25 @@
 package com.n.interlocallyapp;
 
-import androidx.annotation.NonNull;
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,17 +27,30 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProductInfo extends AppCompatActivity {
 
     private TextView shopName, contactNumber, address, productNameView, descriptionView, priceView, discountView;
-    private String iD, productPicture;
+    private String iD, shopNameString;
     private ImageView shopImage, productImage;
     private ArrayList<Map<String,Object>> product;
+    private RatingBar ratingBar;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference feedbackReference;
+    List<Integer> shopRating = new ArrayList<>();
 
 
     @Override
@@ -50,6 +67,7 @@ public class ProductInfo extends AppCompatActivity {
         priceView = findViewById(R.id.textViewPrice);
         discountView = findViewById(R.id.textViewDiscount);
         productImage = findViewById(R.id.productImageView);
+        ratingBar = findViewById(R.id.ratingBar);
 
         //get the intent in the target activity
         Intent intent = getIntent();
@@ -85,10 +103,60 @@ public class ProductInfo extends AppCompatActivity {
                 }
             }
         }
+        shopNameString = args.getString("ShopName_dataProvider");
 //        Picasso.get().load(productPicture).into(productImage);
         Picasso.get().load(args.getString("shopPicture_dataProvider")).into(shopImage);
-        shopName.setText(args.getString("ShopName_dataProvider"));
+        shopName.setText(shopNameString);
         address.setText(args.getString("address_dataProvider"));
         contactNumber.setText(args.getString("contactNumber_dataProvider"));
+    }
+
+
+    private void feedbacks() {
+        db.collection(shopNameString)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                Log.d("TAG_1", document.getId() + " => " + document.get("rating"));
+                                shopRating.add((Integer.parseInt(document.get("rating").toString())));
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+
+                        if(shopRating.size() != 0) {
+                            int totalRatings = 0;
+                            int sum = 0;
+                            for (int i = 0; i < shopRating.size(); i++) {
+                                sum += shopRating.get(i);
+                            }
+                            totalRatings = sum / shopRating.size();
+
+                            Map<String, Object> saveRatings = new HashMap<>();
+                            saveRatings.put("rating", totalRatings);
+
+                            ratingBar.setIsIndicator(false);
+                            ratingBar.setRating(totalRatings);
+
+                            DocumentReference documentReference = db.collection("Feedback").document(shopNameString);
+                            documentReference.set(saveRatings).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d("db", "Success saving data.");
+                                }
+                            })
+                                    .addOnFailureListener(e -> Log.d("db_error", "Error"));
+                        }
+                    }
+                });
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        feedbacks();
     }
 }

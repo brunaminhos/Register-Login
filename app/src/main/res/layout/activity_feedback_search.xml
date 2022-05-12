@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Leave your Rating and Feedback!"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:layout_marginTop="150dp"
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toTopOf="@id/shops_dropdown"
@@ -83,17 +83,16 @@
             />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <TextView
         android:id="@+id/tvFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Very Dissatisfied"
         android:textColor="#FFFFFF"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/shops_dropdown"
-        app:layout_constraintBottom_toBottomOf="@id/ratingBar2"/>
+        app:layout_constraintTop_toBottomOf="@+id/shops_dropdown"/>
 
     <RatingBar
         android:id="@+id/ratingBar2"
@@ -104,40 +103,33 @@
         android:foregroundGravity="center_horizontal"
         android:longClickable="false"
         android:numStars="5"
-        android:progressBackgroundTint="#434040"
+        android:progressBackgroundTint="#7BA5B6"
         android:progressTint="#FF9800"
-        app:layout_constraintBottom_toBottomOf="@id/feedbackBtn"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
         app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@+id/guideline"/>
-
-<!--    <EditText-->
-<!--        android:id="@+id/feedbackRating"-->
-<!--        android:layout_width="342dp"-->
-<!--        android:layout_height="123dp"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:background="#EFEFEF"-->
-<!--        android:ems="0"-->
-<!--        android:gravity="start|top"-->
-<!--        android:hint="Write your feedback here"-->
-<!--        android:lines="4"-->
-<!--        android:padding="5dp"-->
-<!--        app:layout_constraintEnd_toEndOf="@id/guidelineRight"-->
-<!--        app:layout_constraintHorizontal_bias="0.657"-->
-<!--        app:layout_constraintStart_toStartOf="@id/guidelineLeft"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/ratingBar2" />-->
+        app:layout_constraintTop_toBottomOf="@+id/tvFeedback" />
 
     <Button
         android:id="@+id/feedbackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBar2"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar2"
         app:layout_constraintStart_toEndOf="@id/guidelineLeft"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"/>
+        app:layout_constraintBottom_toTopOf="@id/shopErrorMessage"/>
+
+    <TextView
+        android:id="@+id/shopErrorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:textSize="13sp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintTop_toBottomOf="@id/feedbackBtn"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

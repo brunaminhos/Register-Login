@@ -84,28 +84,32 @@
                     android:id="@+id/textViewShopName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="170dp"
                     android:textColor="#000000"
                     android:text="Shop Name"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/textViewShopAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="170dp"
                     android:text="Shop Address"
                     android:textColor="#000000"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/textViewPhoneNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="170dp"
                     android:text="Phone Number"
                     android:textColor="#000000"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:textSize="20sp"/>
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -121,6 +125,7 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/frames"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/box"
@@ -148,25 +153,28 @@
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
                     android:text="Product Name"
-                    android:layout_gravity="right"
+                    android:maxWidth="170dp"
+                    android:layout_gravity="center"
                     android:textSize="15sp"/>
 
                 <TextView
                     android:id="@+id/textViewDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:maxWidth="170dp"
                     android:text="Product Description"
                     android:textColor="#000000"
-                    android:layout_gravity="right"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/textViewPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Product Price"
+                    android:maxWidth="170dp"
                     android:textColor="#000000"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:textSize="15sp"/>
 
                 <TextView
@@ -174,8 +182,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Discount information"
+                    android:maxWidth="170dp"
                     android:textColor="#000000"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:textSize="15sp"/>
             </LinearLayout>
 
@@ -189,5 +198,20 @@
             android:elevation="2dp"
             android:layout_gravity="left"/>
     </FrameLayout>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:foregroundGravity="center_horizontal"
+        android:numStars="5"
+        android:progressBackgroundTint="#92589EBC"
+        android:progressTint="#FF9800"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toTopOf="@id/frames" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

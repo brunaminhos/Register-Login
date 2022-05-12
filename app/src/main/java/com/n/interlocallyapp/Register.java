@@ -97,8 +97,6 @@ public class Register extends AppCompatActivity {
         clickableText();
 
         locationButton();
-        System.out.println("latitude " + latitude + ", longitude " + longitude);
-//        locationView.setText("latitude " + latitude + ", longitude " + longitude);
 
         // validate user input
         registration();
@@ -216,13 +214,6 @@ public class Register extends AppCompatActivity {
                 password = mPassword.getText().toString().trim();
 
                 user = new User(email, latitude, longitude);
-//
-//                if (!isLocationSaved()) {
-//                    // show my message
-//                    locationView.setText("Location needs to be accessed.");
-//                }else{
-//                    locationView.setText("");
-//                }
 
                 if (!validateEmail(email) | !validatePassword(password)) {
                     return;
