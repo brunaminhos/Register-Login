@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -43,8 +44,9 @@ import java.util.Set;
 
 public class Search extends AppCompatActivity {
 
+    private Context self;
     private String selectedCategory, selectedProduct;
-    private AutoCompleteTextView autoCompleteProductsTxt;
+    private AutoCompleteTextView autoCompleteProductsTxt, autoCompleteCategoryTxt;
     private final List<String> setCategories = new ArrayList<>();
     private final List<String> setProducts = new ArrayList<>();
     private final List<Map<String,Object>> setProfiles = new ArrayList<>();
@@ -86,49 +88,54 @@ public class Search extends AppCompatActivity {
         searchButton = findViewById(R.id.searchBtn);
 
         textViewData = findViewById(R.id.textViewData);
-        AutoCompleteTextView autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
+        autoCompleteCategoryTxt = findViewById(R.id.auto_complete_category_txt);
         autoCompleteProductsTxt = findViewById(R.id.auto_complete_product_txt);
 
         ArrayAdapter<String> adapterCategories = new ArrayAdapter<String>(this, R.layout.dropdown_item, setCategories);
-        ArrayAdapter<String> adapterProducts = new ArrayAdapter<>(this, R.layout.dropdown_item, setProducts);
 
         autoCompleteCategoryTxt.setAdapter(adapterCategories);
-        autoCompleteProductsTxt.setAdapter(adapterProducts);
+
+        self = this;
 
         autoCompleteCategoryTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setProducts.clear();
+                selectedProduct = null;
+                setProductsProfiles.clear();
+                autoCompleteProductsTxt.setText("Please select Product");
+                ArrayAdapter<String> adapterProducts = new ArrayAdapter<String>(self, R.layout.dropdown_item, setProducts);
+                autoCompleteProductsTxt.setAdapter(adapterProducts);
+
                 selectedCategory = parent.getItemAtPosition(position).toString();
 //                Toast.makeText(getApplicationContext(), "Item: " + selectedCategory, Toast.LENGTH_SHORT).show();
 
                 productsFinder(selectedCategory);
                 args.putString("selectedCategory_dataProvider", selectedCategory);
+            }
+        });
 
-
-
-                autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        selectedProduct = parent.getItemAtPosition(position).toString();
+        autoCompleteProductsTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedProduct = parent.getItemAtPosition(position).toString();
 //                        Toast.makeText(getApplicationContext(), "Item: " + selectedProduct, Toast.LENGTH_SHORT).show();
 
-                        duplicatesProductsProfiles.clear();
-                        for (Map<String,Object> map : setProductsProfiles) {
-                            // we iterate over all values of the current map
-                            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                                Map<String, Object> productData = (Map<String, Object>) entry.getValue();
-                                if (productData.get("Name").equals(selectedProduct)) {
-                                    Map<String, Object> productsMap = (Map<String, Object>) entry.getValue();
-                                    duplicatesProductsProfiles.add(productsMap);
-                                }
-                            }
+                duplicatesProductsProfiles.clear();
+                for (Map<String,Object> map : setProductsProfiles) {
+                    // we iterate over all values of the current map
+                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                        Map<String, Object> productData = (Map<String, Object>) entry.getValue();
+                        if (productData.get("Name").equals(selectedProduct)) {
+                            Map<String, Object> productsMap = (Map<String, Object>) entry.getValue();
+                            duplicatesProductsProfiles.add(productsMap);
                         }
-
-                        args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) duplicatesProductsProfiles);
-                        Log.d("TAG_1", duplicatesProductsProfiles.toString());
-                        args.putString("selectedProduct_dataProvider", selectedProduct);
                     }
-                });
+                }
+
+                args.putSerializable("products_dataProvider", (ArrayList<Map<String, Object>>) duplicatesProductsProfiles);
+                Log.d("TAG_1", duplicatesProductsProfiles.toString());
+                args.putString("selectedProduct_dataProvider", selectedProduct);
             }
         });
 
@@ -145,6 +152,8 @@ public class Search extends AppCompatActivity {
     }
 
     private void getMap(String selectedCategory) {
+        duplicatesProfiles.clear();
+        setProfiles.clear();
         shopReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -200,6 +209,7 @@ public class Search extends AppCompatActivity {
 
     private void productsFinder(String selectedCategory) {
         duplicatesProducts.clear();
+        duplicatesProductsProfiles.clear();
         shopReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -264,6 +274,7 @@ public class Search extends AppCompatActivity {
 
     private void categoryFinder() {
         duplicatesCategories.clear();
+        duplicatesCategoriesProfiles.clear();
         shopReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
