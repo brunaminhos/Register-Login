@@ -59,15 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         profile = (ArrayList<Map<String, Object>>) args.getSerializable("profiles_dataProvider");
         Log.d("TAG_MAP", profile.toString());
 
-        db.collection("Users").document(currentId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                latitudeUser = Double.parseDouble(documentSnapshot.getString("latitude"));
-                longitudeUser = Double.parseDouble(documentSnapshot.getString("longitude"));
-
-                Log.d("TAG_MAP", "locationUser: " + latitudeUser + ", " + longitudeUser);
-            }
-        });
+        latitudeUser = args.getDouble("latitudeUser");
+        longitudeUser = args.getDouble("longitudeUser");
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -122,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("TAG_MAP", "OUTSIDE MARKER");
 
         locationUser = new LatLng(latitudeUser,longitudeUser);
-//        Log.d("TAG_MAP", "locationUser: " + latitudeUser + ", " + longitudeUser);
+        Log.d("TAG_MAPS", "locationUser: " + latitudeUser + ", " + longitudeUser);
 
         MarkerOptions userLocation = new MarkerOptions().position(locationUser).title("You are here.");
         userLocation.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));

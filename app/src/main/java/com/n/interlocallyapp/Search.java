@@ -24,7 +24,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,6 +49,7 @@ public class Search extends AppCompatActivity {
 
     private Context self;
     private String selectedCategory, selectedProduct;
+    private double longitudeUser, latitudeUser;
     private AutoCompleteTextView autoCompleteProductsTxt, autoCompleteCategoryTxt;
     private final List<String> setCategories = new ArrayList<>();
     private final List<String> setProducts = new ArrayList<>();
@@ -58,6 +62,8 @@ public class Search extends AppCompatActivity {
     private final List<Map<String,Object>> duplicatesProductsProfiles = new ArrayList<>();
     private final List<Map<String,Object>> duplicatesCategoriesProfiles = new ArrayList<>();
     private Bundle args = new Bundle();
+    private FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
+    private String currentId = activeUser.getUid();
 
     private Button searchButton;
 
@@ -96,6 +102,19 @@ public class Search extends AppCompatActivity {
         autoCompleteCategoryTxt.setAdapter(adapterCategories);
 
         self = this;
+
+        db.collection("Users").document(currentId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                latitudeUser = Double.parseDouble(documentSnapshot.getString("latitude"));
+                longitudeUser = Double.parseDouble(documentSnapshot.getString("longitude"));
+
+                args.putDouble("latitudeUser", latitudeUser);
+                args.putDouble("longitudeUser", longitudeUser);
+
+                Log.d("TAG_MAPS", "locationUser: " + latitudeUser + ", " + longitudeUser);
+            }
+        });
 
         autoCompleteCategoryTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
