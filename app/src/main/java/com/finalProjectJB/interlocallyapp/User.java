@@ -1,4 +1,4 @@
-package com.n.interlocallyapp;
+package com.finalProjectJB.interlocallyapp;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;

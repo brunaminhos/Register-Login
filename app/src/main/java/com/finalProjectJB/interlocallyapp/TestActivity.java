@@ -1,4 +1,4 @@
-package com.n.interlocallyapp;
+package com.finalProjectJB.interlocallyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 

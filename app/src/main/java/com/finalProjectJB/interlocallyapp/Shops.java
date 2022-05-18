@@ -1,8 +1,6 @@
-package com.n.interlocallyapp;
+package com.finalProjectJB.interlocallyapp;
 
 import com.google.firebase.database.Exclude;
-
-import java.util.Objects;
 
 public class Shops {
 

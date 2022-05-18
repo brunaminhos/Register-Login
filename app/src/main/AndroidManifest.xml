@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.n.interlocallyapp">
+    package="com.finalProjectJB.interlocallyapp">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -17,25 +17,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InterlocallyApp">
         <activity
-            android:name=".TestActivity"
+            android:name="com.finalProjectJB.interlocallyapp.TestActivity"
             android:exported="false" />
         <activity
-            android:name=".ProductInfo"
+            android:name="com.finalProjectJB.interlocallyapp.ProductInfo"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName="com.finalProjectJB.interlocallyapp.MainActivity"/>
         <activity
-            android:name=".FeedbackSearch"
+            android:name="com.finalProjectJB.interlocallyapp.FeedbackSearch"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName="com.finalProjectJB.interlocallyapp.MainActivity" />
         <activity
-            android:name=".Search"
+            android:name="com.finalProjectJB.interlocallyapp.Search"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName="com.finalProjectJB.interlocallyapp.MainActivity"/>
         <activity
-            android:name=".ForgotPassword"
+            android:name="com.finalProjectJB.interlocallyapp.ForgotPassword"
             android:exported="false"/>
         <activity
-            android:name=".Login"
+            android:name="com.finalProjectJB.interlocallyapp.Login"
             android:exported="true"
             tools:ignore="Instantiatable">
             <intent-filter>
@@ -45,10 +45,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name="com.finalProjectJB.interlocallyapp.Register"
             android:exported="false"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.finalProjectJB.interlocallyapp.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -61,9 +61,9 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="${MAPS_API_KEY}" />
         <activity
-            android:name=".MapsActivity"
+            android:name="com.finalProjectJB.interlocallyapp.MapsActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName="com.finalProjectJB.interlocallyapp.MainActivity"/>
     </application>
 
 </manifest>
