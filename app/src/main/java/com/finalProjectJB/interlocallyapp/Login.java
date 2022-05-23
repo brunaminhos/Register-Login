@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -14,6 +15,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
@@ -48,6 +51,7 @@ public class Login extends AppCompatActivity {
     private boolean passwordVisible;
 
     private FirebaseAuth fAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,20 @@ public class Login extends AppCompatActivity {
 
         passwordInput = findViewById(R.id.passwordInput);
         emailInput = findViewById(R.id.emailInput);
+
+        fAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public  void  onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user!=null){
+                    Intent intent = new Intent(Login.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
 
         seePassword();
 
@@ -222,48 +240,25 @@ public class Login extends AppCompatActivity {
         }
     }
 
-//    public void loadNotes(View v){
-//        shopReference.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                String data = "";
-//
-//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-//                    ShopOwner shopOwner = documentSnapshot.toObject(ShopOwner.class);
-//                    shopOwner.setId(documentSnapshot.getId());
-//
-//                    String email = shopOwner.getEmail();
-//                    String password = shopOwner.getPassword();
-//
-//                    data += "email: " + email + "\npassword: " + password + "\n\n";
-//                }
-//
-//            }
-//        });
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-//    protected void onStart() {
-//        super.onStart();
-//
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        CollectionReference shopReference = db.collection("Shop");
-//
-//        shopReference.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-//                if (e != null){
-//                    return;
-//                }
-//
-//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-//                    ShopOwner shopOwner = documentSnapshot.toObject(ShopOwner.class);
-//                    shopOwner.setId(documentSnapshot.getId());
-//
-//                    String id = shopOwner.getId();
-//                    String email = shopOwner.getEmail();
-//                    String password = shopOwner.getPassword();
-//                }
-//            }
-//        });
-//    }
+        fAuth.addAuthStateListener(mAuthListener);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        fAuth.removeAuthStateListener(mAuthListener);
+    }
+
+
 }

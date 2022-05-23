@@ -207,13 +207,16 @@ public class Register extends AppCompatActivity {
                 }
 
                 //register the user into the firebase
-                fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                fAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //display error to the user or the result if the user was created
                         if (task.isSuccessful()) {
                             user.createNewUser();
-                            Toast.makeText(Register.this, "User Created!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Register.this, "User Created!",
+                                            Toast.LENGTH_SHORT)
+                                    .show();
                             startActivity(new Intent(getApplicationContext(), Register.class));
                         } else {
                             emailInput.setText(task.getException().getMessage());
@@ -222,8 +225,7 @@ public class Register extends AppCompatActivity {
                     }
                 });
             }
-        });
-    }
+        });}
 
     // Validate email input
     @SuppressLint("SetTextI18n")
